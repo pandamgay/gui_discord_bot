@@ -1,0 +1,130 @@
+import asyncio
+import discord
+from discord.ext import commands
+from datetime import datetime
+from dotenv import load_dotenv
+from PyQt5.QtCore import *
+import os
+import traceback
+import pymysql
+from utils import my_logger as ml
+from utils import my_curser as mc
+
+
+class LumielBot(QObject):
+    signal = pyqtSignal(tuple)
+    '''
+    Tuple[int, str] (status, message)
+    status: 봇의 상태를 상수의 형태로 전달
+    message: 시그널 전달 시 추가적인 설명을 전달
+    '''
+
+    def __init__(self):
+        super().__init__()
+        logger = ml.MyLogger(False, "../logs/")
+        self.my_logger = logger.initLogger("Lumiel")
+
+        intents = discord.Intents.all()
+        self.bot = commands.Bot(command_prefix='/', intents=intents)
+        self.bot.event(self.on_ready)
+
+        self.bot.shared_data = {}
+
+        self.BOT_INIT_SUCCESS = 0
+
+    async def on_ready(self):
+        activity = discord.Activity(
+            name="봇 초기화중...",
+            type=discord.ActivityType.playing
+        )
+        await self.bot.change_presence(activity=activity)
+
+        load_dotenv()
+        self.PASSWORD = os.environ.get('PASSWORD')
+        if self.PASSWORD:
+            self.my_logger.debug("암호가 성공적으로 로드되었습니다.")
+        else:
+            self.my_logger.error("암호가 로드되지 않았습니다.")
+            raise EnvironmentError()
+
+        db = pymysql.connect(
+            host='127.0.0.1',
+            port=3306,
+            user='root',
+            passwd=self.PASSWORD,
+            db='lumiel_data',
+            charset='utf8',
+            cursorclass=mc.MyCursor  # 커서 클래스 사용
+        )
+        cursor = db.cursor()
+
+        self.bot.shared_data = {
+            "GUILD_ID": 1383768206635962501,                     # 서버 ID
+            "ENTRY_LOG_CHANNEL_ID": 1384501387211313222,         # 입장 로그 채널 ID
+            "CHECK_MESSAGE_ID": 1388526152351744061,             # 인증 메시지 ID
+            "PEOPLE_COUNT_CHANNEL_ID": 1388573766719901796,      # 인원수 채널 ID
+            "event_message_id": int,                             # 이벤트 메시지 ID
+            "INVITE_LOG_CHANNEL_ID": 1390313743564406785,        # 초대로그 채널 ID
+            "CURSOR": cursor,                                    # DB 커서
+            "PROMOTION_LOG_CHANNEL_ID": 1384518652841295912,     # 승급 로그 채널 ID
+            "BEN_LOG_CHANNEL_ID": 1398123190999580672,           # 벤 로그 채널 ID
+            "DB": db,                                            # DB 연결 객체
+            "is_auction": False,                                 # 경매 활성화 여부
+            "current_price": 0,                                  # 현재 경매 가격
+            "increase_amount_price": 0,                          # 경매 상승폭
+            "winner_id": 0,                                      # 낙찰자 ID
+            "LOGGER": self.my_logger
+        }
+
+        # cogs 로드
+        await self.load_cogs()
+
+        await self.bot.tree.sync()
+        for command in self.bot.tree.get_commands():
+            self.my_logger.debug(f"Command: {command.name}")
+
+        # 업데이트/유지보수 중일 때
+        # activity = discord.Activity(
+        # name="업데이트중 | 원활한 이용이 어렵습니다.",
+        # type=discord.ActivityType.playing
+        # )
+        # status = discord.Status.dnd
+        # await self.bot.change_presence(activity=activity, status=status)
+
+        # 봇의 상태에서 activity를 제거 (업데이트일땐 X)
+        await self.bot.change_presence(activity=None)
+
+        self.my_logger.info(f"{self.bot.user.name} 봇이 성공적으로 초기화되었습니다.")
+        self.signal.emit((self.BOT_INIT_SUCCESS, "봇 초기화 성공"))
+
+    async def load_cogs(self):
+        try:
+            await self.bot.load_extension("lumiel_bot.cogs.events")
+            await self.bot.load_extension("lumiel_bot.cogs.commands.admin_command")
+            await self.bot.load_extension("lumiel_bot.cogs.commands.event_command")
+            await self.bot.load_extension("lumiel_bot.cogs.commands.data_command")
+            await self.bot.load_extension("lumiel_bot.cogs.commands.experience_command")
+            await self.bot.load_extension("lumiel_bot.cogs.commands.item_command")
+            await self.bot.load_extension("lumiel_bot.cogs.commands.invite_command")
+            self.my_logger.info("cogs가 성공적으로 로드되었습니다.")
+        except Exception as e:
+            tb = traceback.format_exc()
+            self.my_logger.error(f"Cog 로드 중 오류 발생:\n {tb}")
+            await self.bot.close()
+
+    def run(self, TOKEN):
+        if TOKEN:
+            self.my_logger.debug("토큰이 성공적으로 로드되었습니다.")
+        else:
+            self.my_logger.error("토큰이 로드되지 않았습니다.")
+            raise EnvironmentError()
+        self.bot.run(TOKEN)
+
+    def stop(self):
+        asyncio.run_coroutine_threadsafe(self.bot.close(), self.bot.loop)
+        self.my_logger.info("봇이 성공적으로 종료되었습니다.")
+
+
+if __name__ == "__main__":
+    bot_instance = LumielBot()
+    bot_instance.run("TOKEN")
