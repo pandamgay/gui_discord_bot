@@ -82,6 +82,8 @@ class LumielBot(QObject):
         await self.bot.tree.sync()
         for command in self.bot.tree.get_commands():
             self.my_logger.debug(f"Command: {command.name}")
+            
+        raise RuntimeError("에러났으니까 처 꺼지셈ㅗ")
 
         # 업데이트/유지보수 중일 때
         # activity = discord.Activity(

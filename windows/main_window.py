@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from utils import path_helper as ph
 
 
-PROJECT_ROOT = ph.find_dir("gui_bot")
+PROJECT_ROOT = ph.find_dir("gui_discord_bot")
 UI_DIR = PROJECT_ROOT / "uis"
 
 main_window = uic.loadUiType(UI_DIR / "mainWindow.ui")[0]

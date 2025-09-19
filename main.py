@@ -25,7 +25,7 @@ from windows import (
 )
 
 
-PROJECT_ROOT = ph.find_dir("gui_bot")
+PROJECT_ROOT = ph.find_dir("gui_discord_bot")
 CONFIG_DIR = PROJECT_ROOT / "config"
 UI_DIR = PROJECT_ROOT / "uis" / "dialog"
 
