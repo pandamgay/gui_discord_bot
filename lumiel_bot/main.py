@@ -1,4 +1,6 @@
 import asyncio
+import sys
+
 import discord
 from discord.ext import commands
 from datetime import datetime
@@ -11,26 +13,29 @@ from utils import my_logger as ml
 from utils import my_curser as mc
 
 
-class LumielBot(QObject):
+class LumielBot(QObject, commands.Bot):
     signal = pyqtSignal(tuple)
     '''
-    Tuple[int, str] (status, message)
-    status: 봇의 상태를 상수의 형태로 전달
+    Tuple[int, str, tuple | None] (type, message, data)
+    type: 시그널 타입을 상수로 전달
     message: 시그널 전달 시 추가적인 설명을 전달
+    data: 추가적인 데이터가 필요할 경우 전달
     '''
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **options):
+        super().__init__(command_prefix="/", intents=discord.Intents.all(), **options)
+
         logger = ml.MyLogger(False, "../logs/")
         self.my_logger = logger.initLogger("Lumiel")
 
-        intents = discord.Intents.all()
-        self.bot = commands.Bot(command_prefix='/', intents=intents)
-        self.bot.event(self.on_ready)
+        self.bot = self
 
         self.bot.shared_data = {}
 
+        self.tree.on_error = self.on_app_command_error
+
         self.BOT_INIT_SUCCESS = 0
+        self.ON_ERROR = 1
 
     async def on_ready(self):
         activity = discord.Activity(
@@ -82,8 +87,6 @@ class LumielBot(QObject):
         await self.bot.tree.sync()
         for command in self.bot.tree.get_commands():
             self.my_logger.debug(f"Command: {command.name}")
-            
-        raise RuntimeError("에러났으니까 처 꺼지셈ㅗ")
 
         # 업데이트/유지보수 중일 때
         # activity = discord.Activity(
@@ -114,7 +117,7 @@ class LumielBot(QObject):
             self.my_logger.error(f"Cog 로드 중 오류 발생:\n {tb}")
             await self.bot.close()
 
-    def run(self, TOKEN):
+    def run_lumiel(self, TOKEN):
         if TOKEN:
             self.my_logger.debug("토큰이 성공적으로 로드되었습니다.")
         else:
@@ -125,6 +128,33 @@ class LumielBot(QObject):
     def stop(self):
         asyncio.run_coroutine_threadsafe(self.bot.close(), self.bot.loop)
         self.my_logger.info("봇이 성공적으로 종료되었습니다.")
+
+    async def on_error(self, event, *args, **kwargs):
+        exc_type, exc_value, exc_tb = sys.exc_info()
+        exc_tb = str(exc_value.__traceback__)
+        self.signal.emit((self.ON_ERROR, "봇 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
+        self.my_logger.error(f"봇 실행 도중 오류 발생: {exc_value}")
+
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError) and error.original:
+            exc_type = type(error.original)
+            exc_value = error.original
+            exc_tb = str(error.original.__traceback__)
+        else:
+            exc_type = type(error)
+            exc_value = error
+            exc_tb = str(error.__traceback__)
+
+        self.signal.emit((self.ON_ERROR, "명령어 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
+        self.my_logger.error(f"명령어 실행 도중 오류 발생: {exc_value}")
+
+    async def on_app_command_error(self, interaction, error):
+        exc_type = type(error)
+        exc_value = error
+        exc_tb = str(getattr(error, "__traceback__", None))
+
+        self.signal.emit((self.ON_ERROR, f"슬래시 커맨드 오류: {interaction.command}", (exc_type, exc_value, exc_tb)))
+        self.my_logger.error(f"명령어 실행 도중 오류 발생: {exc_value}")
 
 
 if __name__ == "__main__":

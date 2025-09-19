@@ -165,14 +165,30 @@ class BotThread(QThread):
         super().__init__()
         self.token = token
         self.bot = bot
+        self.bot.signal.connect(self.signal_handle)
 
     def run(self):
-        self.bot.run(self.token)
+        self.bot.run_lumiel(self.token)
 
     def quit(self):
         self.bot.stop()
         _logger.debug("봇 중지 신호 전송됨")
         super().quit()
+
+    def signal_handle(self, payload):
+        if self.bot.ON_ERROR == payload[0]:
+            _logger.debug(f"BotThread: 시그널 수신됨. message: {payload[1]}")
+            exc_type, exc_value, exc_tb = payload[2]
+
+            log_msg = (
+                f"\n[Unhandled Exception]\n"
+                f"Type: {exc_type}\n"
+                f"Message: {exc_value}\n"
+                f"Traceback:\n{exc_tb}"
+            )
+            _logger.error(log_msg)
+
+            raise RuntimeError("봇 실행 도중 오류가 발생했습니다.")
 
 
 class LoadingWindow(QDialog, loading_window):

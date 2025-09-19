@@ -129,6 +129,8 @@ class AdminCommand(commands.Cog):
     @app_commands.default_permissions(administrator=True)
     async def shutdown(self, interaction: discord.Interaction):
 
+        raise RuntimeError("TESTING")
+
         user = f"{interaction.user.display_name}[{interaction.user.id}]"
         yes_button = Button(label="예", style=discord.ButtonStyle.danger)
         no_button = Button(label="아니오", style=discord.ButtonStyle.secondary)
