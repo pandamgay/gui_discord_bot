@@ -5,6 +5,8 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import *
 
 from utils import path_helper as ph
+from windows import alert_box as box
+from handlers import event_filter as ef
 
 
 PROJECT_ROOT = ph.find_dir("gui_discord_bot")
@@ -37,7 +39,7 @@ TODOs:
 
 class MainWindow(QMainWindow, main_window):
 
-    def __init__(self, event_filter: QObject, bot: QObject):
+    def __init__(self, event_filter: ef.EventFilter, bot: QObject):
         super().__init__()
         self.logger = logging.getLogger("Logger")
 
@@ -49,6 +51,10 @@ class MainWindow(QMainWindow, main_window):
         self.show()
 
         self.titleLabel.setText(f"{self.bot.bot.user.name}님 환영합니다!")
-        # self.logoutPushButton.clicked.connect(self.logout)
+        self.logoutPushButton.clicked.connect(self.logout)
 
-    # def logout(self):
+    def logout(self):
+        reply = box.create_box("로그아웃 하시겠습니까?", QMessageBox.Question, "로그아웃").exec_()
+        if reply == QMessageBox.StandardButton.Yes:
+            self.event_filter.ignore_reply = True
+            self.close()
