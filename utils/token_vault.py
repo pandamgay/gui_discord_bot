@@ -39,7 +39,7 @@ def load_token(path: str = None) -> Tuple[bytes, bytes]:
     '''
     토큰을 불러오는 함수
 
-    :param path: 불러올 토큰의 config디렉터리의 경로
+    :param path: 불러올 토큰의 config디렉토리의 경로
     :return:
         [0] 불러온 token
         [1] 불러온 salt

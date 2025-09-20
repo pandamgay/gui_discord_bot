@@ -4,10 +4,12 @@ from datetime import datetime
 import os
 import inspect
 
+# TODO: 로그 핸들러 추가
+
 
 class MyLogger():
 
-    def __init__(self, is_stream : bool, path: str):
+    def __init__(self, is_stream: bool, path: str):
         self.class_name = self.__class__.__name__
         self.log_path = path
         os.makedirs("logs", exist_ok=True)
@@ -23,7 +25,10 @@ class MyLogger():
         )
 
         # 핸들러 정의
-        file_handler = logging.FileHandler(f'logs/log_{datetime.now().strftime("%Y%m%d%H%M%S")}-{self.created_module}.log', mode='w')
+        file_handler = logging.FileHandler(
+            f'logs/log_{datetime.now().strftime("%Y%m%d%H%M%S")}-{self.created_module}.log',
+            mode='w'
+        )
 
         # 핸들러에 포매터 지정
         file_handler.setFormatter(file_formatter)

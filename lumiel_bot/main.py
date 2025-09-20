@@ -3,7 +3,6 @@ import sys
 
 import discord
 from discord.ext import commands
-from datetime import datetime
 from dotenv import load_dotenv
 from PyQt5.QtCore import *
 import os
@@ -33,9 +32,6 @@ class LumielBot(QObject, commands.Bot):
         self.bot.shared_data = {}
 
         self.tree.on_error = self.on_app_command_error
-
-        self.BOT_INIT_SUCCESS = 0
-        self.ON_ERROR = 1
 
     async def on_ready(self):
         activity = discord.Activity(
@@ -100,7 +96,7 @@ class LumielBot(QObject, commands.Bot):
         await self.bot.change_presence(activity=None)
 
         self.my_logger.info(f"{self.bot.user.name} 봇이 성공적으로 초기화되었습니다.")
-        self.signal.emit((self.BOT_INIT_SUCCESS, "봇 초기화 성공"))
+        self.signal.emit((BOT_INIT_SUCCESS, "봇 초기화 성공"))
 
     async def load_cogs(self):
         try:
@@ -132,7 +128,7 @@ class LumielBot(QObject, commands.Bot):
     async def on_error(self, event, *args, **kwargs):
         exc_type, exc_value, exc_tb = sys.exc_info()
         exc_tb = str(exc_value.__traceback__)
-        self.signal.emit((self.ON_ERROR, "봇 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
+        self.signal.emit((ON_ERROR, "봇 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
         self.my_logger.error(f"봇 실행 도중 오류 발생: {exc_value}")
 
     async def on_command_error(self, ctx, error):
@@ -145,7 +141,7 @@ class LumielBot(QObject, commands.Bot):
             exc_value = error
             exc_tb = str(error.__traceback__)
 
-        self.signal.emit((self.ON_ERROR, "명령어 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
+        self.signal.emit((ON_ERROR, "명령어 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
         self.my_logger.error(f"명령어 실행 도중 오류 발생: {exc_value}")
 
     async def on_app_command_error(self, interaction, error):
@@ -153,8 +149,12 @@ class LumielBot(QObject, commands.Bot):
         exc_value = error
         exc_tb = str(getattr(error, "__traceback__", None))
 
-        self.signal.emit((self.ON_ERROR, f"슬래시 커맨드 오류: {interaction.command}", (exc_type, exc_value, exc_tb)))
+        self.signal.emit((ON_ERROR, f"슬래시 커맨드 오류: {interaction.command}", (exc_type, exc_value, exc_tb)))
         self.my_logger.error(f"명령어 실행 도중 오류 발생: {exc_value}")
+
+
+BOT_INIT_SUCCESS = 0
+ON_ERROR = 1
 
 
 if __name__ == "__main__":
