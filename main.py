@@ -100,7 +100,7 @@ class StartWindow(QDialog, start_window):
         loading.exec_()
 
     def login_handle(self, payload):
-        if self.bot.BOT_INIT_SUCCESS == payload[0]:
+        if lumiel.BOT_INIT_SUCCESS == payload[0]:
             _logger.debug(f"StartWindow: 시그널 수신됨. message: {payload[1]}")
             self.main = main_window.MainWindow(event_filter, self.bot)
             self.main.show()
@@ -176,7 +176,7 @@ class BotThread(QThread):
         super().quit()
 
     def signal_handle(self, payload):
-        if self.bot.ON_ERROR == payload[0]:
+        if lumiel.ON_ERROR == payload[0]:
             _logger.debug(f"BotThread: 시그널 수신됨. message: {payload[1]}")
             exc_type, exc_value, exc_tb = payload[2]
 
@@ -202,7 +202,7 @@ class LoadingWindow(QDialog, loading_window):
         self.show()
 
     def login_handle(self, payload):
-        if self.bot.BOT_INIT_SUCCESS == payload[0]:
+        if lumiel.BOT_INIT_SUCCESS == payload[0]:
             _logger.debug(f"LoadingWindow: 시그널 수신됨. message: {payload[1]}")
             self.accept()
 
@@ -261,13 +261,13 @@ class InputPasswordWindow(QDialog, start_window):
     def new_token(self):
         shutil.rmtree(os.path.join(PROJECT_ROOT, "config"))
         self.is_removed = True
-        event_filter.ignore_reply = True
+        event_filter.self_close = True
         self.close()
 
     def token_check(self):
         token, salt = tv.load_token()
         self.token = tc.decrypt_token(token, self.inputTokenLine.text(), salt).decode("utf-8")
-        event_filter.ignore_reply = True
+        event_filter.self_close = True
         self.close()
 
     def handle_check(self, state):

@@ -55,3 +55,23 @@ def log_filter(level: int, created_module: str, path: pathlib.Path = None) -> st
                 continue
 
     return log
+
+
+def log_inspector(log: str, level: int) -> bool:
+    '''
+    로그의 레벨이 목표 레벨에 도달하는지 검사하는 함수
+    :param log: 검사할 로그
+    :param level: 목표 레벨 (logging상수 사용.)
+    :return: 목표 레벨에 도달하는지에 대한 bool값
+    '''
+    log_level_nums = {
+        logging.DEBUG: "[DEBUG]",
+        logging.INFO: "[INFO]",
+        logging.WARNING: "[WARNING]",
+        logging.ERROR: "[ERROR]",
+    }
+    included_levels = [v for k, v in sorted(log_level_nums.items()) if k >= level]
+
+    if any(level in log for level in included_levels):
+        return True
+    return False

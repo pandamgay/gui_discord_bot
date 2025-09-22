@@ -13,7 +13,7 @@ from utils import my_curser as mc
 
 
 class LumielBot(QObject, commands.Bot):
-    signal = pyqtSignal(tuple)
+    signal: pyqtSignal = pyqtSignal(tuple)
     '''
     Tuple[int, str, tuple | None] (type, message, data)
     type: 시그널 타입을 상수로 전달
@@ -25,6 +25,7 @@ class LumielBot(QObject, commands.Bot):
         super().__init__(command_prefix="/", intents=discord.Intents.all(), **options)
 
         logger = ml.MyLogger(False, "../logs/")
+        logger.set_signal(self.signal)
         self.my_logger = logger.initLogger("Lumiel")
 
         self.bot = self
@@ -155,6 +156,7 @@ class LumielBot(QObject, commands.Bot):
 
 BOT_INIT_SUCCESS = 0
 ON_ERROR = 1
+ON_LOGGING = 30
 
 
 if __name__ == "__main__":

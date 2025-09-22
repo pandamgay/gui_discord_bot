@@ -3,3 +3,4 @@
 gui_bot/
 .idea/
 *.bin
+config/

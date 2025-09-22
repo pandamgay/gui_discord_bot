@@ -36,8 +36,8 @@ def global_exception_hook(exctype, value, traceback):
 
     if bot_thread is not None:
         bot_thread.quit()
-        bot_thread.wait()
-    os._exit(0)
+        bot_thread.wait(5000)
+    os._exit(1)
 
 
 sys.excepthook = global_exception_hook

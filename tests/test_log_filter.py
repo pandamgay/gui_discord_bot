@@ -30,3 +30,27 @@ def test_log_filter():
     assert "[INFO]" in info_log
     assert "[WARNING]" in warning_log
     assert "[ERROR]" in error_log
+
+
+def test_log_inspector():
+
+    assert lf.log_inspector("[2025-09-22 23:50:53,047] [DEBUG] ::: test >>> test log", logging.DEBUG)
+    assert lf.log_inspector("[2025-09-22 23:50:53,048] [INFO] ::: test >>> test log", logging.DEBUG)
+    assert lf.log_inspector("[2025-09-22 23:50:53,049] [WARNING] ::: test >>> test log", logging.DEBUG)
+    assert lf.log_inspector("[2025-09-22 23:50:53,050] [ERROR] ::: test >>> test log", logging.DEBUG)
+
+    assert not lf.log_inspector("[2025-09-22 23:50:53,047] [DEBUG] ::: test >>> test log", logging.INFO)
+    assert lf.log_inspector("[2025-09-22 23:50:53,048] [INFO] ::: test >>> test log", logging.INFO)
+    assert lf.log_inspector("[2025-09-22 23:50:53,049] [WARNING] ::: test >>> test log", logging.INFO)
+    assert lf.log_inspector("[2025-09-22 23:50:53,050] [ERROR] ::: test >>> test log", logging.INFO)
+
+    assert not lf.log_inspector("[2025-09-22 23:50:53,047] [DEBUG] ::: test >>> test log", logging.WARNING)
+    assert not lf.log_inspector("[2025-09-22 23:50:53,048] [INFO] ::: test >>> test log", logging.WARNING)
+    assert lf.log_inspector("[2025-09-22 23:50:53,049] [WARNING] ::: test >>> test log", logging.WARNING)
+    assert lf.log_inspector("[2025-09-22 23:50:53,050] [ERROR] ::: test >>> test log", logging.WARNING)
+
+    assert not lf.log_inspector("[2025-09-22 23:50:53,047] [DEBUG] ::: test >>> test log", logging.ERROR)
+    assert not lf.log_inspector("[2025-09-22 23:50:53,048] [INFO] ::: test >>> test log", logging.ERROR)
+    assert not lf.log_inspector("[2025-09-22 23:50:53,049] [WARNING] ::: test >>> test log", logging.ERROR)
+    assert lf.log_inspector("[2025-09-22 23:50:53,050] [ERROR] ::: test >>> test log", logging.ERROR)
+
