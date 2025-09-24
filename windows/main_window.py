@@ -60,7 +60,7 @@ class MainWindow(QMainWindow, main_window):
         self.titleLabel.setText(f"{self.bot.bot.user.name}님 환영합니다!")
         self.logoutPushButton.clicked.connect(self.logout)
         self.logLevelSavePushButton.clicked.connect(self.level_save)
-        self.init_logTextBorwser()
+        self.init_logTextBrowser()
 
     def logout(self):
         reply = box.create_box("로그아웃 하시겠습니까?", QMessageBox.Question, "로그아웃").exec_()
@@ -93,8 +93,8 @@ class MainWindow(QMainWindow, main_window):
         scroll_bar = self.logTextBrowser.verticalScrollBar()
         scroll_bar.setValue(scroll_bar.maximum())
 
-    def init_logTextBorwser(self):
-        self.logger.debug("logTextBorwser 초기화됨.")
+    def init_logTextBrowser(self):
+        self.logger.debug("logTextBrowser 초기화됨.")
         log = lf.log_filter(self.level, "lumiel_bot.main")
         self.logTextBrowser.setPlainText(log)
         scroll_bar = self.logTextBrowser.verticalScrollBar()
