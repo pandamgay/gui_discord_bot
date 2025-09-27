@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from PyQt5.QtCore import *
 import os
 import traceback
+from typing import Tuple
 import pymysql
 from utils import my_logger as ml
 from utils import my_curser as mc
@@ -22,17 +23,22 @@ class LumielBot(QObject, commands.Bot):
     '''
 
     def __init__(self, **options):
-        super().__init__(command_prefix="/", intents=discord.Intents.all(), **options)
+        QObject.__init__(self)
+        commands.Bot.__init__(self, command_prefix="/", intents=discord.Intents.all(), **options)
 
         logger = ml.MyLogger(False, "../logs/")
         logger.set_signal(self.signal)
         self.my_logger = logger.initLogger("Lumiel")
+
+        self.signal.connect(self.signal_handler)
 
         self.bot = self
 
         self.bot.shared_data = {}
 
         self.tree.on_error = self.on_app_command_error
+
+        self.channels = {}
 
     async def on_ready(self):
         activity = discord.Activity(
@@ -48,6 +54,19 @@ class LumielBot(QObject, commands.Bot):
         else:
             self.my_logger.error("암호가 로드되지 않았습니다.")
             raise EnvironmentError()
+
+        name_counter = {}
+
+        for guild in self.bot.guilds:
+            for channel in guild.channels:
+                if isinstance(channel, discord.TextChannel):
+                    key = f"{channel.name} ({guild.name})"
+                    count = name_counter.get(key, 0) + 1
+                    name_counter[key] = count
+
+                    if count > 1:
+                        key = f"{key} [{count}]"
+                    self.channels[key] = channel.id
 
         db = pymysql.connect(
             host='127.0.0.1',
@@ -122,6 +141,18 @@ class LumielBot(QObject, commands.Bot):
             raise EnvironmentError()
         self.bot.run(TOKEN)
 
+    async def send_message(self, message: str, channel_id: int) -> None:
+        '''
+        채널에 메시지를 보내는 함수
+        :param message: 보낼 메시지
+        :param channel_id: 보낼 채널 id
+        :return: None
+        '''
+        channel = self.bot.get_channel(channel_id)
+        if channel is None:
+            self.signal.emit((84, "채널을 찾을 수 없음"))
+        await channel.send(message)
+
     def stop(self):
         asyncio.run_coroutine_threadsafe(self.bot.close(), self.bot.loop)
         self.my_logger.info("봇이 성공적으로 종료되었습니다.")
@@ -153,10 +184,17 @@ class LumielBot(QObject, commands.Bot):
         self.signal.emit((ON_ERROR, f"슬래시 커맨드 오류: {interaction.command}", (exc_type, exc_value, exc_tb)))
         self.my_logger.error(f"명령어 실행 도중 오류 발생: {exc_value}")
 
+    def signal_handler(self, payload):
+        if payload[0] == DO_SEND_MESSAGE:
+            asyncio.create_task(self.send_message)
+
 
 BOT_INIT_SUCCESS = 0
 ON_ERROR = 1
 ON_LOGGING = 30
+DO_SEND_MESSAGE = 80
+CHANNEL_NOT_FOUND = 84
+
 
 
 if __name__ == "__main__":
