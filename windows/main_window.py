@@ -31,7 +31,7 @@ TODOs:
     - 로그아웃 버튼 **완료**
     - 채널에 메시지 전송
     - 명령어 편집기 버튼 => 일단 셀렉터 이동하는데 까지만 만들기
-    - 유틸리티 버튼 => 상태 보고 넣을지 딴걸로 바꿀지 고민중
+    - 유틸리티 버튼 => 유틸리티를 이벤트로 변경해서 설정에서도 나왔던 하드코딩된 부분이나, 커맨드처럼 사용자화할 수 있도록 하는 기능 구현
     - 로그 레벨 콤보박스 **완료**
     - 로그 레벨 적용 버튼 **완료**
     - 로그 출력창 **완료**
@@ -59,7 +59,9 @@ class MainWindow(QMainWindow, main_window):
         self.titleLabel.setText(f"{self.bot.bot.user.name}님 환영합니다!")
         self.logoutPushButton.clicked.connect(self.logout)
         self.logLevelSavePushButton.clicked.connect(self.level_save)
+
         self.init_logTextBrowser()
+        self.init_channelSelectComboBox()
 
     def logout(self):
         reply = box.create_box("로그아웃 하시겠습니까?", QMessageBox.Question, "로그아웃").exec_()
@@ -93,8 +95,13 @@ class MainWindow(QMainWindow, main_window):
         scroll_bar.setValue(scroll_bar.maximum())
 
     def init_logTextBrowser(self):
-        self.logger.debug("logTextBrowser 초기화됨.")
         log = lf.log_filter(self.level, "lumiel_bot.main")
         self.logTextBrowser.setPlainText(log)
         scroll_bar = self.logTextBrowser.verticalScrollBar()
         scroll_bar.setValue(scroll_bar.maximum())
+        self.logger.debug("logTextBrowser 초기화됨.")
+
+    def init_channelSelectComboBox(self):
+        self.channelSelectComboBox.addItems(list(self.bot.channels))
+        self.channelSelectComboBox.view().setMinimumWidth(300)
+        self.logger.debug("channelSelectComboBox 초기화됨.")

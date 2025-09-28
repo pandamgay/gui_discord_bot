@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from PyQt5.QtCore import *
 import os
 import traceback
-from typing import Tuple
 import pymysql
 from utils import my_logger as ml
 from utils import my_curser as mc
@@ -23,8 +22,7 @@ class LumielBot(QObject, commands.Bot):
     '''
 
     def __init__(self, **options):
-        QObject.__init__(self)
-        commands.Bot.__init__(self, command_prefix="/", intents=discord.Intents.all(), **options)
+        super().__init__(command_prefix="/", intents=discord.Intents.all(), **options)
 
         logger = ml.MyLogger(False, "../logs/")
         logger.set_signal(self.signal)
@@ -60,12 +58,12 @@ class LumielBot(QObject, commands.Bot):
         for guild in self.bot.guilds:
             for channel in guild.channels:
                 if isinstance(channel, discord.TextChannel):
-                    key = f"{channel.name} ({guild.name})"
+                    key = f"# {channel.name} ({guild.name})"
                     count = name_counter.get(key, 0) + 1
                     name_counter[key] = count
 
                     if count > 1:
-                        key = f"{key} [{count}]"
+                        key = f"# {channel.name}[{count}] ({guild.name})"
                     self.channels[key] = channel.id
 
         db = pymysql.connect(
@@ -148,10 +146,15 @@ class LumielBot(QObject, commands.Bot):
         :param channel_id: 보낼 채널 id
         :return: None
         '''
-        channel = self.bot.get_channel(channel_id)
-        if channel is None:
-            self.signal.emit((84, "채널을 찾을 수 없음"))
-        await channel.send(message)
+        try:
+            channel = self.bot.get_channel(channel_id)
+            if channel is None:
+                self.signal.emit((84, "채널을 찾을 수 없음"))
+            await channel.send(message)
+        except Exception as e:
+            self.signal.emit((SEND_MESSAGE_ERROR, "메시지 전송 도중 오류 발생", (e,)))
+        else:
+            self.signal.emit((SEND_SUCCESS, "메시지를 성공적으로 전송했습니다."))
 
     def stop(self):
         asyncio.run_coroutine_threadsafe(self.bot.close(), self.bot.loop)
@@ -186,14 +189,16 @@ class LumielBot(QObject, commands.Bot):
 
     def signal_handler(self, payload):
         if payload[0] == DO_SEND_MESSAGE:
-            asyncio.create_task(self.send_message)
+            asyncio.create_task(self.send_message(payload[2][0], payload[2][1]))
 
 
 BOT_INIT_SUCCESS = 0
 ON_ERROR = 1
 ON_LOGGING = 30
-DO_SEND_MESSAGE = 80
+DO_SEND_MESSAGE = 81
 CHANNEL_NOT_FOUND = 84
+SEND_MESSAGE_ERROR = 85
+SEND_SUCCESS = 80
 
 
 
