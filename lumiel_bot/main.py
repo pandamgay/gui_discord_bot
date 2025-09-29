@@ -53,6 +53,17 @@ class LumielBot(QObject, commands.Bot):
             self.my_logger.error("암호가 로드되지 않았습니다.")
             raise EnvironmentError()
 
+        db = pymysql.connect(
+            host='127.0.0.1',
+            port=3306,
+            user='root',
+            passwd=self.PASSWORD,
+            db='lumiel_data',
+            charset='utf8',
+            cursorclass=mc.MyCursor  # 커서 클래스 사용
+        )
+        cursor = db.cursor()
+
         name_counter = {}
 
         for guild in self.bot.guilds:
@@ -66,16 +77,7 @@ class LumielBot(QObject, commands.Bot):
                         key = f"# {channel.name}[{count}] ({guild.name})"
                     self.channels[key] = channel.id
 
-        db = pymysql.connect(
-            host='127.0.0.1',
-            port=3306,
-            user='root',
-            passwd=self.PASSWORD,
-            db='lumiel_data',
-            charset='utf8',
-            cursorclass=mc.MyCursor  # 커서 클래스 사용
-        )
-        cursor = db.cursor()
+        self.loop = asyncio.get_event_loop()
 
         self.bot.shared_data = {
             "GUILD_ID": 1383768206635962501,                     # 서버 ID
@@ -150,11 +152,15 @@ class LumielBot(QObject, commands.Bot):
             channel = self.bot.get_channel(channel_id)
             if channel is None:
                 self.signal.emit((84, "채널을 찾을 수 없음"))
+                self.my_logger.debug("메시지 전송 실패: 채널을 찾을 수 없음")
+                return
             await channel.send(message)
         except Exception as e:
             self.signal.emit((SEND_MESSAGE_ERROR, "메시지 전송 도중 오류 발생", (e,)))
+            self.my_logger.debug("메시지 전송 실패: 메시지 전송 도중 오류 발생")
         else:
             self.signal.emit((SEND_SUCCESS, "메시지를 성공적으로 전송했습니다."))
+            self.my_logger.debug("메시지를 성공적으로 전송했습니다.")
 
     def stop(self):
         asyncio.run_coroutine_threadsafe(self.bot.close(), self.bot.loop)
@@ -189,7 +195,8 @@ class LumielBot(QObject, commands.Bot):
 
     def signal_handler(self, payload):
         if payload[0] == DO_SEND_MESSAGE:
-            asyncio.create_task(self.send_message(payload[2][0], payload[2][1]))
+            self.my_logger.debug(f"LumielBot: 시그널 수신됨. message: {payload[1]}")
+            self.loop.create_task(self.send_message(payload[2][0], payload[2][1]))
 
 
 BOT_INIT_SUCCESS = 0
@@ -199,7 +206,6 @@ DO_SEND_MESSAGE = 81
 CHANNEL_NOT_FOUND = 84
 SEND_MESSAGE_ERROR = 85
 SEND_SUCCESS = 80
-
 
 
 if __name__ == "__main__":

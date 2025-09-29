@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
@@ -59,6 +60,7 @@ class MainWindow(QMainWindow, main_window):
         self.titleLabel.setText(f"{self.bot.bot.user.name}님 환영합니다!")
         self.logoutPushButton.clicked.connect(self.logout)
         self.logLevelSavePushButton.clicked.connect(self.level_save)
+        self.messageSendPushButton.clicked.connect(self.send_message)
 
         self.init_logTextBrowser()
         self.init_channelSelectComboBox()
@@ -78,7 +80,23 @@ class MainWindow(QMainWindow, main_window):
                 scroll_bar = self.logTextBrowser.verticalScrollBar()
                 scroll_bar.setValue(scroll_bar.maximum())
             else:
-                self.logger.debug("설정되지 않은 로그 레벨에 도달하지 않음.")
+                self.logger.debug("설정된 로그 레벨에 도달하지 않음.")
+        elif payload[0] == lumiel.SEND_MESSAGE_ERROR:
+            exc_type = type(payload[2][0])
+            exc_value = str(payload[2][0])
+            exc_tb = "".join(
+                traceback.format_exception(
+                    type(payload[2][0]), payload[2][0], payload[2][0].__traceback__
+                )
+            )
+
+            log_msg = (
+                f"\n[Unhandled Exception]\n"
+                f"Type: {exc_type}\n"
+                f"Message: {exc_value}\n"
+                f"Traceback:\n{exc_tb}"
+            )
+            logging.error(log_msg)
 
     def level_save(self):
         level_indexes = {
@@ -105,3 +123,20 @@ class MainWindow(QMainWindow, main_window):
         self.channelSelectComboBox.addItems(list(self.bot.channels))
         self.channelSelectComboBox.view().setMinimumWidth(300)
         self.logger.debug("channelSelectComboBox 초기화됨.")
+
+    def send_message(self):
+        self.logger.debug(
+            f"메시지 전송이 요청되었습니다.\n"
+            f"message: {self.messageLineEdit.text()}\n"
+            f"channel: {self.bot.channels[self.channelSelectComboBox.currentText()]}"
+        )
+        self.bot.signal.emit(
+            (
+                lumiel.DO_SEND_MESSAGE,
+                "메시지가 전송이 요청되었습니다.",
+                (
+                    self.messageLineEdit.text(),
+                    self.bot.channels[self.channelSelectComboBox.currentText()]
+                )
+            )
+        )
