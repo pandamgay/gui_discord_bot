@@ -151,7 +151,7 @@ class LumielBot(QObject, commands.Bot):
         try:
             channel = self.bot.get_channel(channel_id)
             if channel is None:
-                self.signal.emit((84, "채널을 찾을 수 없음"))
+                self.signal.emit((CHANNEL_NOT_FOUND, "채널을 찾을 수 없음"))
                 self.my_logger.debug("메시지 전송 실패: 채널을 찾을 수 없음")
                 return
             await channel.send(message)
@@ -160,7 +160,7 @@ class LumielBot(QObject, commands.Bot):
             self.my_logger.debug("메시지 전송 실패: 메시지 전송 도중 오류 발생")
         else:
             self.signal.emit((SEND_SUCCESS, "메시지를 성공적으로 전송했습니다."))
-            self.my_logger.debug("메시지를 성공적으로 전송했습니다.")
+            self.my_logger.info("메시지를 성공적으로 전송했습니다.")
 
     def stop(self):
         asyncio.run_coroutine_threadsafe(self.bot.close(), self.bot.loop)

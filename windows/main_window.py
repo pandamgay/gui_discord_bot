@@ -97,6 +97,11 @@ class MainWindow(QMainWindow, main_window):
                 f"Traceback:\n{exc_tb}"
             )
             logging.error(log_msg)
+            box.create_box("메시지 전송 도중 오류 발생", QMessageBox.Warning).exec_()
+        elif payload[0] == lumiel.CHANNEL_NOT_FOUND:
+            box.create_box("채널을 찾을 수 없습니다.", QMessageBox.Warning).exec_()
+        elif payload[0] == lumiel.SEND_SUCCESS:
+            box.create_box("메시지가 성공적으로 전송되었습니다.", QMessageBox.Information).exec_()
 
     def level_save(self):
         level_indexes = {
@@ -140,3 +145,4 @@ class MainWindow(QMainWindow, main_window):
                 )
             )
         )
+        self.messageLineEdit.clear()

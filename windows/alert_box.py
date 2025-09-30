@@ -10,7 +10,7 @@ def create_box(msg: str, level: int, title: str = None) -> QMessageBox:
     QMessageBox를 생성하는 메서드
 
     :param msg: 표시할 입력 문구
-    :param level: 창의 종료(경고 단계)
+    :param level: 창의 종류(경고 단계, QMessageBox상수 사용)
     :param title: 창의 제목, None일 시 단계에 따라 설정
     :return: QMessageBox인스턴스
     '''
