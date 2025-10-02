@@ -196,7 +196,10 @@ class LumielBot(QObject, commands.Bot):
     def signal_handler(self, payload):
         if payload[0] == DO_SEND_MESSAGE:
             self.my_logger.debug(f"LumielBot: 시그널 수신됨. message: {payload[1]}")
-            self.loop.create_task(self.send_message(payload[2][0], payload[2][1]))
+            asyncio.run_coroutine_threadsafe(
+                self.send_message(payload[2][0], payload[2][1]),
+                self.loop
+            )
 
 
 BOT_INIT_SUCCESS = 0

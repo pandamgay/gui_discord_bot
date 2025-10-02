@@ -30,7 +30,7 @@ TODOs:
     ---------------------------------------------------------------
     - 타이틀 레이블 **완료**
     - 로그아웃 버튼 **완료**
-    - 채널에 메시지 전송
+    - 채널에 메시지 전송 **완료**
     - 명령어 편집기 버튼 => 일단 셀렉터 이동하는데 까지만 만들기
     - 유틸리티 버튼 => 유틸리티를 이벤트로 변경해서 설정에서도 나왔던 하드코딩된 부분이나, 커맨드처럼 사용자화할 수 있도록 하는 기능 구현
     - 로그 레벨 콤보박스 **완료**
@@ -61,6 +61,7 @@ class MainWindow(QMainWindow, main_window):
         self.logoutPushButton.clicked.connect(self.logout)
         self.logLevelSavePushButton.clicked.connect(self.level_save)
         self.messageSendPushButton.clicked.connect(self.send_message)
+        self.messageLineEdit.returnPressed.connect(self.send_message)
 
         self.init_logTextBrowser()
         self.init_channelSelectComboBox()
@@ -135,6 +136,9 @@ class MainWindow(QMainWindow, main_window):
             f"message: {self.messageLineEdit.text()}\n"
             f"channel: {self.bot.channels[self.channelSelectComboBox.currentText()]}"
         )
+        if self.messageLineEdit.text() == "":
+            box.create_box("메시지를 입력하세요.", QMessageBox.Warning).exec_()
+            return
         self.bot.signal.emit(
             (
                 lumiel.DO_SEND_MESSAGE,
