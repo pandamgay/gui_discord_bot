@@ -5,6 +5,7 @@ from typing import Tuple
 
 from PyQt5 import uic
 from PyQt5.QtCore import QThread
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
 from lumiel_bot import main as lumiel
@@ -286,6 +287,7 @@ class InputPasswordWindow(QDialog, start_window):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.installEventFilter(event_filter)
+    app.setWindowIcon(QIcon(str(PROJECT_ROOT / "public" / "icons.ico")))
 
     window = StartWindow()
     app.exec_()
