@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, QEvent
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QMenu
 from PyQt5.QtGui import QWindow
 from PyQt5.QtCore import QThread
 import logging
@@ -48,12 +48,17 @@ class EventFilter(QObject):
                 event.ignore()
                 return True
 
-            if isinstance(obj, QWindow):
+            if isinstance(obj, QMenu) or isinstance(obj, QWindow):
                 event.accept()
                 return False
 
+            from windows import main_window
             if isinstance(obj, QMessageBox):
                 _logger.debug("QMessageBox의 종료창 무시 후 본인 종료")
+                event.accept()
+                return False
+            elif isinstance(obj, main_window.InfoDialog):
+                _logger.debug("InfoDialog의 종료창 무시 후 본인 종료")
                 event.accept()
                 return False
 

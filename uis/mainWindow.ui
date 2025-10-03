@@ -339,13 +339,13 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>정보</string>
     </property>
-    <addaction name="infomation"/>
+    <addaction name="openInfo"/>
     <addaction name="openGithub"/>
    </widget>
    <addaction name="menu_2"/>
    <addaction name="menu"/>
   </widget>
-  <action name="infomation">
+  <action name="openInfo">
    <property name="text">
     <string>정보</string>
    </property>

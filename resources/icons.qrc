@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="public">
+  <qresource prefix="resources">
     <file>icon16.png</file>
     <file>icon32.png</file>
     <file>icon48.png</file>

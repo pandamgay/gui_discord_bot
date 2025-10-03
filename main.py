@@ -287,7 +287,7 @@ class InputPasswordWindow(QDialog, start_window):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.installEventFilter(event_filter)
-    app.setWindowIcon(QIcon(str(PROJECT_ROOT / "public" / "icons.ico")))
+    app.setWindowIcon(QIcon(str(PROJECT_ROOT / "resources" / "icons.ico")))
 
     window = StartWindow()
     app.exec_()

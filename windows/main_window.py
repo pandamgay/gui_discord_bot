@@ -17,6 +17,8 @@ PROJECT_ROOT = ph.find_dir("gui_discord_bot")
 UI_DIR = PROJECT_ROOT / "uis"
 
 main_window = uic.loadUiType(UI_DIR / "mainWindow.ui")[0]
+info_dialog = uic.loadUiType(UI_DIR / "dialog" / "infoDialog.ui",
+                             from_imports=True, import_from='resources')[0]
 
 # TODO: 메인 윈도우 구현
 '''
@@ -24,7 +26,7 @@ TODOs:
     (ui기준 위에서부터 정렬)
     - 메뉴 바
         - 정보
-            - 정보
+            - 정보 **완료**
             - github => 브라우저로 바로 연결
         - 설정 => 바로 설정창으로 이동
     ---------------------------------------------------------------
@@ -58,13 +60,20 @@ class MainWindow(QMainWindow, main_window):
         self.level = logging.INFO
 
         self.titleLabel.setText(f"{self.bot.bot.user.name}님 환영합니다!")
+
         self.logoutPushButton.clicked.connect(self.logout)
         self.logLevelSavePushButton.clicked.connect(self.level_save)
         self.messageSendPushButton.clicked.connect(self.send_message)
         self.messageLineEdit.returnPressed.connect(self.send_message)
 
+        self.openInfo.triggered.connect(self.open_info)
+
         self.init_logTextBrowser()
         self.init_channelSelectComboBox()
+
+    def open_info(self):
+        self.event_filter.self_close = True
+        InfoDialog().exec_()
 
     def logout(self):
         reply = box.create_box("로그아웃 하시겠습니까?", QMessageBox.Question, "로그아웃").exec_()
@@ -150,3 +159,11 @@ class MainWindow(QMainWindow, main_window):
             )
         )
         self.messageLineEdit.clear()
+
+
+class InfoDialog(QDialog, info_dialog):
+
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.show()
