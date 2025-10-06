@@ -51,7 +51,7 @@ class LumielBot(QObject, commands.Bot):
             self.my_logger.debug("암호가 성공적으로 로드되었습니다.")
         else:
             self.my_logger.error("암호가 로드되지 않았습니다.")
-            raise EnvironmentError()
+            raise EnvironmentError("암호가 로드되지 않았습니다.")
 
         db = pymysql.connect(
             host='127.0.0.1',
@@ -168,7 +168,7 @@ class LumielBot(QObject, commands.Bot):
 
     async def on_error(self, event, *args, **kwargs):
         exc_type, exc_value, exc_tb = sys.exc_info()
-        exc_tb = str(exc_value.__traceback__)
+        exc_tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
         self.signal.emit((ON_ERROR, "봇 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
         self.my_logger.error(f"봇 실행 도중 오류 발생: {exc_value}")
 
