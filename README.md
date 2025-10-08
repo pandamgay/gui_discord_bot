@@ -140,6 +140,13 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 > SOFTWARE.
 > ```
 
+## 개발 환경
+- 운영체제: Windows 11
+- IDE: PyCharmCE(Community Edition) 2024.1.7
+- 언어: Python 3.12
+- GUI 프레임워크: PyQt5 5.15.11 (Qt 5.15.2)
+- 테스트 프레임워크: Pytest
+
 ## 릴리즈(변경 로그)
 > ### [릴리즈 바로가기](https://github.com/pandamgay/gui_discord_bot/releases)
 
