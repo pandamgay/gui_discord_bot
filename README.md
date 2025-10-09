@@ -112,7 +112,6 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 | [python-dotenv](https://pypi.org/project/python-dotenv/) | BSD 3-Clause License               | Copyright (c) 2014 Saurabh Kumar, 2013 Ted Tieken, 2013 Jacob Kaplan-Moss |
 | [cryptography](https://pypi.org/project/cryptography/)   | Apache-2.0 OR BSD-3-Clause License | Copyright (c) Individual contributors                                     |
 | [PyQt5](https://pypi.org/project/PyQt5/)                 | GPL v3 OR Commercial License       | Copyright (c) Riverbank Computing Limited                                 |
-| [PyMySQL](https://pypi.org/project/PyMySQL/)             | MIT License                        | Copyright (c) 2010, 2013 PyMySQL contributors                             |
 | [pytest](https://pypi.org/project/pytest/)               | MIT License                        | Copyright (c) 2004 Holger Krekel and others                               |
 
 ## 라이선스
@@ -146,6 +145,7 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 - 언어: Python 3.12
 - GUI 프레임워크: PyQt5 5.15.11 (Qt 5.15.2)
 - 테스트 프레임워크: Pytest
+- DB 라이브러리: SQLite3
 
 ## 릴리즈(변경 로그)
 > ### [릴리즈 바로가기](https://github.com/pandamgay/gui_discord_bot/releases)
