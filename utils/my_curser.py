@@ -1,26 +1,27 @@
 import logging
-from pymysql.cursors import Cursor
-from pymysql import OperationalError
+import sqlite3
 from utils import my_logger as ml
 
-class MyCursor(Cursor):
+
+class MyCursor(sqlite3.Cursor):
     def __init__(self, connection, *args, **kwargs):
-        super().__init__(connection, *args, **kwargs)
-        self.my_logger = logging.getLogger("Logger")
+        super().__init__(connection)
+        self.my_logger = logging.getLogger("Lumiel")
         self._connection = connection
 
     def execute(self, query: str, args=None):
         conn = self._connection
 
         self.my_logger.debug(f"Executing query: {query}")
+        self.my_logger.debug(f"Query executed successfully: {self.rowcount} row(s) affected")
+
         try:
-            conn.ping(reconnect=True)
-        except OperationalError as e:
-            if e.args[0] in (2006, 2013):
-                self.my_logger.warning("Connection lost, attempting to reconnect...")
-                conn.connect()  # 재연결 시도
+            if args is not None:
+                result = super().execute(query, args)
             else:
-                raise
-        result = super().execute(query, args)
-        self.my_logger.debug(f"Query executed successfully: {result}row(s) affected")
+                result = super().execute(query)
+        except sqlite3.Error as e:
+            self.my_logger.warning(f"SQLite error: {e}")
+            raise
+        self.my_logger.debug(f"Query executed successfully")
         return result

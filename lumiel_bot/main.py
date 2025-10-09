@@ -1,13 +1,12 @@
 import asyncio
 import sys
+import sqlite3
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 from PyQt5.QtCore import *
 import os
 import traceback
-import pymysql
 from utils import my_logger as ml
 from utils import my_curser as mc
 
@@ -45,24 +44,10 @@ class LumielBot(QObject, commands.Bot):
         )
         await self.bot.change_presence(activity=activity)
 
-        load_dotenv()
-        self.PASSWORD = os.environ.get('PASSWORD')
-        if self.PASSWORD:
-            self.my_logger.debug("암호가 성공적으로 로드되었습니다.")
-        else:
-            self.my_logger.error("암호가 로드되지 않았습니다.")
-            raise EnvironmentError("암호가 로드되지 않았습니다.")
-
-        db = pymysql.connect(
-            host='127.0.0.1',
-            port=3306,
-            user='root',
-            passwd=self.PASSWORD,
-            db='lumiel_data',
-            charset='utf8',
-            cursorclass=mc.MyCursor  # 커서 클래스 사용
-        )
-        cursor = db.cursor()
+        init_db()
+        db = sqlite3.connect("main.db")
+        db.row_factory = None
+        cursor = db.cursor(factory=mc.MyCursor)
 
         name_counter = {}
 
@@ -200,6 +185,35 @@ class LumielBot(QObject, commands.Bot):
                 self.send_message(payload[2][0], payload[2][1]),
                 self.loop
             )
+
+
+def init_db():
+    with sqlite3.connect("main.db") as db:
+        cursor = db.cursor()
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS server (
+            discord_guild_id BIGINT PRIMARY KEY,
+            bot_setting TEXT DEFAULT '{}'
+        );
+        """)
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            discord_user_id BIGINT NOT NULL UNIQUE,
+            experience INT NOT NULL DEFAULT 0,
+            recent_attendance_date DATE DEFAULT NULL,
+            continuous_attendance_date INT DEFAULT 0,
+            invite_count INT DEFAULT 0,
+            inviter_id INT DEFAULT 0,
+            warn_until DATE DEFAULT NULL,
+            join_guild INT NOT NULL,
+            FOREIGN KEY (join_guild) REFERENCES server(discord_guild_id)
+        );
+        """)
+
+        db.commit()
 
 
 BOT_INIT_SUCCESS = 0
