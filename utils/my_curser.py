@@ -1,6 +1,5 @@
 import logging
 import sqlite3
-from utils import my_logger as ml
 
 
 class MyCursor(sqlite3.Cursor):

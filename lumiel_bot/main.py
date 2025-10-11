@@ -61,6 +61,10 @@ class LumielBot(QObject, commands.Bot):
                     if count > 1:
                         key = f"# {channel.name}[{count}] ({guild.name})"
                     self.channels[key] = channel.id
+            cursor.execute(
+                f"INSERT OR IGNORE INTO server (discord_guild_id)"
+                f"VALUES ({guild.id});"
+            )
 
         self.loop = asyncio.get_event_loop()
 

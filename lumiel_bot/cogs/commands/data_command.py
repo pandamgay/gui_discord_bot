@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 import traceback
 
+
 class Data_command(commands.Cog):
 
     def __init__(self, bot):
@@ -154,7 +155,7 @@ class Data_command(commands.Cog):
         try:
             cursor.execute(
                 "SELECT * "
-                "FROM lumiel_data.users;"
+                "FROM users;"
             ) # 테이블 전체 조회
             db_users = cursor.fetchall()
         except Exception as e:

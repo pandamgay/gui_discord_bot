@@ -196,7 +196,7 @@ class AdminCommand(commands.Cog):
                 ) #  경고 기간 조회
                 result = cursor.fetchone()[0]
                 current_date = datetime.today().date()
-                if result < current_date:
+                if result and result < str(current_date):
                     k += 1
                     await member.remove_roles(role)
                     self.my_logger.debug(f"{member.display_name}의 경고 역할이 제거되었습니다.")
@@ -242,7 +242,7 @@ class AdminCommand(commands.Cog):
                 ) # 경고 기간 조회
                 result = cursor.fetchone()[0]
                 current_date = datetime.today().date()
-                if result < current_date:
+                if result and result < str(current_date):
                     k += 1
                     await member.remove_roles(role)
                     self.my_logger.debug(f"{member.display_name}의 경고 역할이 제거되었습니다.")

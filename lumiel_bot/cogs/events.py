@@ -3,6 +3,7 @@ from discord.ext import commands
 import logging
 import traceback
 
+
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
