@@ -1,4 +1,4 @@
-# Branch 및 PR 규칙
+# Branch 및 PR, Release 규칙
 
 ## Branch 전략 및 규칙
 
@@ -47,3 +47,15 @@
 ### 커밋 메시지
 
 - 커밋 메시지: `자세한 수정사항`
+
+## Release 규칙
+기본 형식은 아래를 따릅니다.
+```
+# 버전
+version - 버전
+Released - 릴리스 날짜
+
+## Added
+## Fixed
+## Update
+```
