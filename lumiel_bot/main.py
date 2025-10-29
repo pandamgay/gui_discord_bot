@@ -65,6 +65,7 @@ class LumielBot(QObject, commands.Bot):
                 f"INSERT OR IGNORE INTO server (discord_guild_id)"
                 f"VALUES ({guild.id});"
             )
+            db.commit()
 
         self.loop = asyncio.get_event_loop()
 
@@ -79,12 +80,24 @@ class LumielBot(QObject, commands.Bot):
             "PROMOTION_LOG_CHANNEL_ID": 1384518652841295912,     # 승급 로그 채널 ID
             "BEN_LOG_CHANNEL_ID": 1398123190999580672,           # 벤 로그 채널 ID
             "DB": db,                                            # DB 연결 객체
-            "is_auction": False,                                 # 경매 활성화 여부
-            "current_price": 0,                                  # 현재 경매 가격
-            "increase_amount_price": 0,                          # 경매 상승폭
-            "winner_id": 0,                                      # 낙찰자 ID
-            "LOGGER": self.my_logger
+            "LOGGER": self.my_logger,                            # 로거
+            "invites": {}                                        # 초대 정보
         }
+
+        invites = {}
+        for guild in self.bot.guilds:
+            invites[guild.id] = {}
+            for invite in await guild.invites():
+                invites[guild.id][invite.channel.id] = {invite.code: [invite.uses, invite.inviter.id]}
+                '''
+                    {
+                        int:
+                            {
+                                int : [int, int]
+                            }
+                    }
+                '''
+        self.bot.shared_data["invites"] = invites
 
         # cogs 로드
         await self.load_cogs()
