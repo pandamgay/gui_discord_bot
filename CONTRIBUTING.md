@@ -8,7 +8,7 @@
 - **develop**: 다음 배포를 위한 개발하는 브랜치
 - **feature**: develop 브랜치에 포함되며, 추가 기능을 개발하는 브랜치
 - **release**: 다음 버전 출시를 준비하는 브랜치
-  - **feature**: 브랜치에서 release 브랜치로 QA 및 테스트 진행 후 main 브랜치로 머지
+  - feature 브랜치에서 release 브랜치로 QA 및 테스트 진행 후 main 브랜치로 머지
 - **hotfix**: main 브랜치의 버그를 수정하는 브랜치
 
 > 브랜치는 접두사 규칙을 지켜야 하며, develop/main에서 분기
