@@ -121,7 +121,6 @@ class Events(commands.Cog):
         channel_id = shared["PEOPLE_COUNT_CHANNEL_ID"]
         user = f"{member.display_name}[{member.id}]"
         db = shared["DB"]
-        discord_user = await self.bot.fetch_user(member.id)
         cursor = shared["CURSOR"]
         log_channel_id = self.bot.get_channel(shared["INVITE_LOG_CHANNEL_ID"])
 
@@ -140,7 +139,7 @@ class Events(commands.Cog):
         try:
             new_name = f"현재 인원: {guild.member_count}명 📡"
             await channel.edit(name=new_name)
-            self.my_logger.info(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
+            self.my_logger.debug(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
         except discord.Forbidden:
             self.my_logger.error("음성 채널 이름을 변경할 권한이 없습니다. 권한을 확인해주세요.")
         except Exception as e:
@@ -149,7 +148,7 @@ class Events(commands.Cog):
 
         # 초대 정보 저장
         try:
-            if self._is_unknownInviter():
+            if await self._is_unknownInviter():
                 self.my_logger.debug("초대 정보가 없습니다.")
                 await log_channel_id.send(
                     f"초대 정보가 없습니다.\n"
@@ -260,7 +259,7 @@ class Events(commands.Cog):
         try:
             new_name = f"현재 인원: {guild.member_count}명 📡"
             await channel.edit(name=new_name)
-            self.my_logger.info(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
+            self.my_logger.debug(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
         except discord.Forbidden:
             self.my_logger.error("음성 채널 이름을 변경할 권한이 없습니다. 권한을 확인해주세요.")
             return
@@ -291,7 +290,6 @@ class Events(commands.Cog):
         shared = self.bot.shared_data
         user = f"{message.author.display_name}[{message.author.id}]"
         cursor = shared["CURSOR"]
-        log_channel_id = self.bot.get_channel(shared["INVITE_LOG_CHANNEL_ID"])
         db = shared["DB"]
 
         # 봇 자신의 메시지는 무시
@@ -325,9 +323,9 @@ class Events(commands.Cog):
 
         invites = {}
         for guild in self.bot.guilds:
-            invites[guild.id] = []
+            invites[guild.id] = {}
             for invite in await guild.invites():
-                invites[guild.id].append({invite.code: [invite.uses, invite.inviter.id]})
+                invites[guild.id] = {invite.code: [invite.uses, invite.inviter.id]}
         if invites == invites_orign:
             return True
         else:
@@ -338,16 +336,22 @@ class Events(commands.Cog):
         new_invites = {}
 
         for guild in self.bot.guilds:
-            new_invites[guild.id] = []
+            new_invites[guild.id] = {}
             for invite in await guild.invites():
-                new_invites[guild.id].append({invite.code: [invite.uses, invite.inviter.id]})
+                new_invites[guild.id] = {invite.code: [invite.uses, invite.inviter.id]}
 
-        for guild_id, old_channels in old_invites.items():
-            new_channels = new_invites.get(guild_id, {})
-            for invite_code, old_data in old_channels.items():
-                new_data = new_channels.get(invite_code)
-                if new_data and new_data[0] == old_data[0] + 1:
-                    return new_data[1]
+        self.my_logger.debug(f"old_invites:{old_invites}")
+        self.my_logger.debug(f"new_invites:{new_invites}")
+
+        for guild_id, new_invite_data in new_invites.items():
+            self.my_logger.debug(f"{"{"}{guild_id}: {new_invite_data}{"}"}")
+            for invite_code, new_invite_info in new_invite_data.items():
+                self.my_logger.debug(f"{"{"}{invite_code}: {new_invite_info}{"}"}")
+                if new_invite_info[0] + 1 == old_invites[guild_id][invite_code][0]:
+                    self.bot.shared_data["invites"] = new_invites
+                    return new_invite_info[1]
+
+        return 0
 
 
 async def setup(bot):

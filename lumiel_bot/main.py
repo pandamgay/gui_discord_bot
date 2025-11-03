@@ -75,7 +75,7 @@ class LumielBot(QObject, commands.Bot):
             "CHECK_MESSAGE_ID": 1388526152351744061,             # 인증 메시지 ID
             "PEOPLE_COUNT_CHANNEL_ID": 1388573766719901796,      # 인원수 채널 ID
             "event_message_id": int,                             # 이벤트 메시지 ID
-            "INVITE_LOG_CHANNEL_ID": 1390313743564406785,        # 초대로그 채널 ID
+            "INVITE_LOG_CHANNEL_ID": 1433423256429400094,        # 초대로그 채널 ID
             "CURSOR": cursor,                                    # DB 커서
             "PROMOTION_LOG_CHANNEL_ID": 1384518652841295912,     # 승급 로그 채널 ID
             "BEN_LOG_CHANNEL_ID": 1398123190999580672,           # 벤 로그 채널 ID
@@ -88,16 +88,13 @@ class LumielBot(QObject, commands.Bot):
         for guild in self.bot.guilds:
             invites[guild.id] = {}
             for invite in await guild.invites():
-                invites[guild.id][invite.channel.id] = {invite.code: [invite.uses, invite.inviter.id]}
+                invites[guild.id] = {invite.code: [invite.uses, invite.inviter.id]}
                 '''
-                    {
-                        int:
-                            {
-                                int : [int, int]
-                            }
-                    }
+                    {int: {str: [int, int]}}
                 '''
         self.bot.shared_data["invites"] = invites
+
+        self.my_logger.debug(str(invites))
 
         # cogs 로드
         await self.load_cogs()
@@ -106,15 +103,7 @@ class LumielBot(QObject, commands.Bot):
         for command in self.bot.tree.get_commands():
             self.my_logger.debug(f"Command: {command.name}")
 
-        # 업데이트/유지보수 중일 때
-        # activity = discord.Activity(
-        # name="업데이트중 | 원활한 이용이 어렵습니다.",
-        # type=discord.ActivityType.playing
-        # )
-        # status = discord.Status.dnd
-        # await self.bot.change_presence(activity=activity, status=status)
-
-        # 봇의 상태에서 activity를 제거 (업데이트일땐 X)
+        # 봇의 상태에서 activity를 제거
         await self.bot.change_presence(activity=None)
 
         self.my_logger.info(f"{self.bot.user.name} 봇이 성공적으로 초기화되었습니다.")
@@ -129,7 +118,7 @@ class LumielBot(QObject, commands.Bot):
             await self.bot.load_extension("lumiel_bot.cogs.commands.experience_command")
             await self.bot.load_extension("lumiel_bot.cogs.commands.item_command")
             await self.bot.load_extension("lumiel_bot.cogs.commands.invite_command")
-            self.my_logger.info("cogs가 성공적으로 로드되었습니다.")
+            self.my_logger.debug("cogs가 성공적으로 로드되었습니다.")
         except Exception as e:
             tb = traceback.format_exc()
             self.my_logger.error(f"Cog 로드 중 오류 발생:\n {tb}")
