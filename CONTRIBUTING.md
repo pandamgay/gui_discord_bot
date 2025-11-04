@@ -1,17 +1,24 @@
-# Branch 및 PR, Release 규칙
+# Branch 및 PR 규칙
 
 ## Branch 전략 및 규칙
 
-본 프로젝트는 git-flow 전략 및 규칙에 따릅니다.
+본 프로젝트의 전략 및 규칙은 다음과 같습니다.
 
-- **main**: 프로젝트가 배포되는 브랜치
+- **main**: 프로젝트가 안정화된 상태로 릴리즈 배포에 진입합니다.
 - **develop**: 다음 배포를 위한 개발하는 브랜치
-- **feature**: develop 브랜치에 포함되며, 추가 기능을 개발하는 브랜치
-- **release**: 다음 버전 출시를 준비하는 브랜치
-  - feature 브랜치에서 release 브랜치로 QA 및 테스트 진행 후 main 브랜치로 머지
-- **hotfix**: main 브랜치의 버그를 수정하는 브랜치
+- **release**: 프로젝트 릴리즈가 배포되는 브랜치
 
-> 브랜치는 접두사 규칙을 지켜야 하며, develop/main에서 분기
+### Branch flow
+develop → main → release 순으로 병합됩니다.
+
+### Tag 및 Release 노트 관리
+태그는 release 브랜치 기준으로 생성합니다.  
+릴리즈 노트는 태그 생성 시 함께 작성합니다.
+
+### Hotfix 정책
+release에서 버그 발견 시 develop에서 수정 후 release에 반영합니다.  
+긴급 수정 필요 시 별도 hotfix/* 브랜치 생성 가능합니다.  
+release에 반영된 수정은 develop에도 동일하게 반영합니다.
 
 ## PR(Pull Request) 규칙
 
@@ -47,15 +54,3 @@
 ### 커밋 메시지
 
 - 커밋 메시지: `자세한 수정사항`
-
-## Release 규칙
-기본 형식은 아래를 따릅니다.
-```
-# 버전
-version - 버전
-Released - 릴리스 날짜
-
-## Added
-## Fixed
-## Update
-```
