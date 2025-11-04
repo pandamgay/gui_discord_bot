@@ -149,9 +149,9 @@ class Events(commands.Cog):
         # 초대 정보 저장
         try:
             if await self._is_unknownInviter():
-                self.my_logger.debug("초대 정보가 없습니다.")
+                self.my_logger.debug(f"초대된 사용자의 초대 정보가 없습니다: {member.id}")
                 await log_channel_id.send(
-                    f"초대 정보가 없습니다.\n"
+                    f"{member.mention}의 초대 정보가 없습니다.\n"
                     "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
                 )
             else:
@@ -171,11 +171,12 @@ class Events(commands.Cog):
                         await log_channel_id.send(f"초대된 사용자가 이미 DB에 존재합니다.")
 
                     cursor.execute(
-                        f"INSERT INTO users (discord_user_id, inviter_id) "
-                        f"VALUES ({invited_member_id}, {inviter_id})"
+                        f"INSERT INTO users (discord_user_id, inviter_id, join_guild) "
+                        f"VALUES ({invited_member_id}, {inviter_id}, {member.guild.id});"
                     ) # 사용자 정보 삽입
                     db.commit()
                     self.my_logger.debug(f"{user}의 정보를 DB에 성공적으로 저장했습니다.")
+                    await log_channel_id.send(f"{member.mention}님의 초대 정보가 성공적으로 저장되었습니다.")
                 except Exception as e:
                     tb = traceback.format_exc()
                     self.my_logger.error(f"DB에 사용자 정보를 저장하는 중 오류 발생: {tb}")
@@ -190,7 +191,7 @@ class Events(commands.Cog):
                 invited_member = await self.bot.fetch_user(invited_member_id)
                 self.my_logger.debug(f"invited_member::: {invited_member}")
 
-                # -on_message이벤트 리스너가 on_member_join이벤트 리스너보다 먼저 실행된 경우-
+                # ~~~on_message이벤트 리스너가 on_member_join이벤트 리스너보다 먼저 실행된 경우~~~
                 # 현재로써는 의미는 없지만, 추후 오류 방지를 위해 남겨둠
                 if result is None:
                     self.my_logger.warning(f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member_id}")
