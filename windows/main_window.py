@@ -85,12 +85,9 @@ class MainWindow(QMainWindow, main_window):
         if payload[0] == lumiel.ON_LOGGING:
             self.logger.debug(f"MainWindow.signal: 로그 시그널 수신됨. message: {payload[1]}")
             if lf.log_inspector(payload[2][0], self.level):
-                self.logger.debug("설정된 로그 레벨에 도달함.")
                 self.logTextBrowser.append(payload[2][0])
                 scroll_bar = self.logTextBrowser.verticalScrollBar()
                 scroll_bar.setValue(scroll_bar.maximum())
-            else:
-                self.logger.debug("설정된 로그 레벨에 도달하지 않음.")
         elif payload[0] == lumiel.SEND_MESSAGE_ERROR:
             exc_type = type(payload[2][0])
             exc_value = str(payload[2][0])

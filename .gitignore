@@ -5,3 +5,4 @@ gui_bot/
 *.bin
 config/
 *.env
+*.db

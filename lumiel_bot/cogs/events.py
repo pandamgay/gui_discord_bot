@@ -121,7 +121,8 @@ class Events(commands.Cog):
         channel_id = shared["PEOPLE_COUNT_CHANNEL_ID"]
         user = f"{member.display_name}[{member.id}]"
         db = shared["DB"]
-        discord_user = await self.bot.fetch_user(member.id)
+        cursor = shared["CURSOR"]
+        log_channel_id = self.bot.get_channel(shared["INVITE_LOG_CHANNEL_ID"])
 
         # 음성 채널 가져오기
         try:
@@ -133,20 +134,103 @@ class Events(commands.Cog):
         except Exception as e:
             tb = traceback.format_exc()
             self.my_logger.error(f"음성 채널을 가져오는 중 오류 발생: {tb}")
-            return
 
         # 음성 채널 이름 변경
         try:
             new_name = f"현재 인원: {guild.member_count}명 📡"
             await channel.edit(name=new_name)
-            self.my_logger.info(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
+            self.my_logger.debug(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
         except discord.Forbidden:
             self.my_logger.error("음성 채널 이름을 변경할 권한이 없습니다. 권한을 확인해주세요.")
-            return
         except Exception as e:
             tb = traceback.format_exc()
             self.my_logger.error(f"음성 채널 이름 변경 중 오류 발생: {tb}")
-            return
+
+        # 초대 정보 저장
+        try:
+            if await self._is_unknownInviter():
+                self.my_logger.debug(f"초대된 사용자의 초대 정보가 없습니다: {member.id}")
+                await log_channel_id.send(
+                    f"{member.mention}의 초대 정보가 없습니다.\n"
+                    "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
+                )
+            else:
+                inviter_id: int = await self._get_inviter_id()
+                invited_member_id: int = member.id
+                self.my_logger.debug(f"inviter\"{inviter_id}\" invited\"{invited_member_id}\"")
+
+                try:
+                    cursor.execute(
+                        f"SELECT COUNT(*) "
+                        f"FROM users "
+                        f"WHERE discord_user_id = {invited_member_id}"
+                    ) # 사용자 존재 여부 확인
+                    exists = cursor.fetchone()[0]
+                    if exists:
+                        self.my_logger.debug(f"{user}는 이미 DB에 존재합니다.")
+                        await log_channel_id.send(f"초대된 사용자가 이미 DB에 존재합니다.")
+
+                    cursor.execute(
+                        f"INSERT INTO users (discord_user_id, inviter_id, join_guild) "
+                        f"VALUES ({invited_member_id}, {inviter_id}, {member.guild.id});"
+                    ) # 사용자 정보 삽입
+                    db.commit()
+                    self.my_logger.debug(f"{user}의 정보를 DB에 성공적으로 저장했습니다.")
+                    await log_channel_id.send(f"{member.mention}님의 초대 정보가 성공적으로 저장되었습니다.")
+                except Exception as e:
+                    tb = traceback.format_exc()
+                    self.my_logger.error(f"DB에 사용자 정보를 저장하는 중 오류 발생: {tb}")
+
+                cursor.execute(
+                    f"SELECT * "
+                    f"FROM users "
+                    f"WHERE discord_user_id = {invited_member_id};"
+                ) # 초대된 멤버의 데이터 가져오기
+                result = cursor.fetchone()
+
+                invited_member = await self.bot.fetch_user(invited_member_id)
+                self.my_logger.debug(f"invited_member::: {invited_member}")
+
+                # ~~~on_message이벤트 리스너가 on_member_join이벤트 리스너보다 먼저 실행된 경우~~~
+                # 현재로써는 의미는 없지만, 추후 오류 방지를 위해 남겨둠
+                if result is None:
+                    self.my_logger.warning(f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member_id}")
+                    await log_channel_id.send(
+                        f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member.mention}\n"
+                        "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
+                    )
+
+                cursor.execute(
+                    f"UPDATE users "
+                    f"SET invite_count = invite_count + 1 "
+                    f"WHERE discord_user_id = {inviter_id};"
+                ) # 초대자의 초대횟수 증가
+                cursor.execute(
+                    f"UPDATE users "
+                    f"SET experience = experience + 100 "
+                    f"WHERE discord_user_id = {inviter_id};"
+                ) # 초대자에게 경험치 부여
+                db.commit()
+
+                invites = {}
+                for guild in self.bot.guilds:
+                    invites[guild.id] = {}
+                    for invite in await guild.invites():
+                        invites[guild.id][invite.channel.id] = {invite.code: [invite.uses, invite.inviter.id]}
+                        '''
+                            {
+                                int:
+                                    {
+                                        int : [int, int]
+                                    }
+                            }
+                        '''
+                self.bot.shared_data["invites"] = invites
+
+                self.my_logger.debug("초대 정보가 성공적으로 저장되었습니다.")
+        except Exception as e:
+            tb = traceback.format_exc()
+            self.my_logger.error(f"초대 정보 저장 중 오류 발생: {tb}")
 
         self.my_logger.info(f"{user} - 서버 입장.")
 
@@ -176,7 +260,7 @@ class Events(commands.Cog):
         try:
             new_name = f"현재 인원: {guild.member_count}명 📡"
             await channel.edit(name=new_name)
-            self.my_logger.info(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
+            self.my_logger.debug(f"음성 채널 이름을 '{new_name}'으로 성공적으로 변경했습니다.")
         except discord.Forbidden:
             self.my_logger.error("음성 채널 이름을 변경할 권한이 없습니다. 권한을 확인해주세요.")
             return
@@ -207,7 +291,6 @@ class Events(commands.Cog):
         shared = self.bot.shared_data
         user = f"{message.author.display_name}[{message.author.id}]"
         cursor = shared["CURSOR"]
-        log_channel_id = self.bot.get_channel(shared["INVITE_LOG_CHANNEL_ID"])
         db = shared["DB"]
 
         # 봇 자신의 메시지는 무시
@@ -222,81 +305,6 @@ class Events(commands.Cog):
             else:
                 self.my_logger.debug(f"메시지 수신: \"{message.content}\" - {user} ({message.channel.name})")
 
-        # 초대 정보 저장
-        try:
-            if "unknownInviter" in message.content:
-                self.my_logger.debug("초대 정보가 없습니다.")
-                await log_channel_id.send(
-                    f"초대 정보가 없습니다.\n"
-                    "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
-                )
-                return
-            elif message.channel.id == 1390313743564406785 and message.author.id == 499595256270946326:
-                inviter_id : int = message.content.split("/")[1] # 얘 unknownInviter일 때 그거 해야함
-                invited_member_id : int = message.content.split("/")[2]
-                self.my_logger.debug(f"inviter\"{inviter_id}\" invited\"{invited_member_id}\"")
-
-                try:
-                    cursor.execute(
-                        f"SELECT COUNT(*) "
-                        f"FROM users "
-                        f"WHERE discord_user_id = {invited_member_id}"
-                    ) # 사용자 존재 여부 확인
-                    exists = cursor.fetchone()[0]
-                    if exists:
-                        self.my_logger.debug(f"{user}는 이미 DB에 존재합니다.")
-                        await log_channel_id.send(f"초대된 사용자가 이미 DB에 존재합니다.")
-                        return
-
-                    cursor.execute(
-                        f"INSERT INTO users (discord_user_id, inviter_id) "
-                        f"VALUES ({invited_member_id}, {inviter_id})"
-                    ) # 사용자 정보 삽입
-                    db.commit()
-                    self.my_logger.debug(f"{user}의 정보를 DB에 성공적으로 저장했습니다.")
-                except Exception as e:
-                    tb = traceback.format_exc()
-                    self.my_logger.error(f"DB에 사용자 정보를 저장하는 중 오류 발생: {tb}")
-                    return
-
-                cursor.execute(
-                    f"SELECT * "
-                    f"FROM users "
-                    f"WHERE discord_user_id = {invited_member_id};"
-                ) # 초대된 멤버의 데이터 가져오기
-                result = cursor.fetchone()
-
-                invited_member = await self.bot.fetch_user(invited_member_id)
-                self.my_logger.debug(f"invited_member::: {invited_member}")
-
-                # on_message이벤트 리스너가 on_member_join이벤트 리스너보다 먼저 실행된 경우
-                if result == None:
-                    self.my_logger.warning(f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member_id}")
-                    await log_channel_id.send(
-                        f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member.mention}\n"
-                        "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
-                    )
-                    return
-
-                cursor.execute(
-                    f"UPDATE users "
-                    f"SET invite_count = invite_count + 1 "
-                    f"WHERE discord_user_id = {inviter_id};"
-                ) # 초대자의 초대횟수 증가
-                cursor.execute(
-                    f"UPDATE users "
-                    f"SET experience = experience + 100 "
-                    f"WHERE discord_user_id = {inviter_id};"
-                ) #
-                db.commit()
-
-                self.my_logger.debug("초대 정보가 성공적으로 저장되었습니다.")
-                return
-        except Exception as e:
-            tb = traceback.format_exc()
-            self.my_logger.error(f"초대 정보 저장 중 오류 발생: {tb}")
-            return
-
         # 경험치 부여
         try:
             cursor.execute(
@@ -310,6 +318,41 @@ class Events(commands.Cog):
             tb = traceback.format_exc()
             self.my_logger.error(f"on_message의 경험치 부여 중 오류 발생: {tb}")
             return
+
+    async def _is_unknownInviter(self) -> bool:
+        invites_orign = self.bot.shared_data["invites"]
+
+        invites = {}
+        for guild in self.bot.guilds:
+            invites[guild.id] = {}
+            for invite in await guild.invites():
+                invites[guild.id] = {invite.code: [invite.uses, invite.inviter.id]}
+        if invites == invites_orign:
+            return True
+        else:
+            return False
+
+    async def _get_inviter_id(self) -> int:
+        old_invites = self.bot.shared_data["invites"]
+        new_invites = {}
+
+        for guild in self.bot.guilds:
+            new_invites[guild.id] = {}
+            for invite in await guild.invites():
+                new_invites[guild.id] = {invite.code: [invite.uses, invite.inviter.id]}
+
+        self.my_logger.debug(f"old_invites:{old_invites}")
+        self.my_logger.debug(f"new_invites:{new_invites}")
+
+        for guild_id, new_invite_data in new_invites.items():
+            self.my_logger.debug(f"{"{"}{guild_id}: {new_invite_data}{"}"}")
+            for invite_code, new_invite_info in new_invite_data.items():
+                self.my_logger.debug(f"{"{"}{invite_code}: {new_invite_info}{"}"}")
+                if new_invite_info[0] + 1 == old_invites[guild_id][invite_code][0]:
+                    self.bot.shared_data["invites"] = new_invites
+                    return new_invite_info[1]
+
+        return 0
 
 
 async def setup(bot):
