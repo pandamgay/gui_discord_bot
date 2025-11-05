@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import logging
 from typing import Tuple
 
 from PyQt5 import uic
@@ -50,6 +51,12 @@ class StartWindow(QDialog, start_window):
         self.bot = lumiel.LumielBot()
         self.bot.signal.connect(self.login_handle)
         _logger.debug(f"StartWindow.signal: {self.bot.signal}")
+
+        for name, logger in logging.root.manager.loggerDict.items():
+            if name.startswith("discord"):
+                l = logging.getLogger(name)
+                l.handlers.clear()
+                l.propagate = False
 
         result = self.token_check()
 

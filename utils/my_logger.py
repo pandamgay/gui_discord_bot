@@ -50,7 +50,7 @@ class MyLogger():
             stream_formatter = logging.Formatter(
                 "[%(asctime)s] [%(levelname)s] ::: %(module)s >>> %(message)s"
             )
-            stream_handler = logging.StreamHandler(sys.stdout)
+            stream_handler = OverwriteHandler(sys.stdout)
             stream_handler.setFormatter(stream_formatter)
             __logger.addHandler(stream_handler)
 
@@ -74,3 +74,22 @@ class SignalHandler(logging.Handler):
     def emit(self, record):
         formatted_message = self.formatter.format(record)
         self.signal.emit((lumiel.ON_LOGGING, "로그 발생함.", (formatted_message,)))
+
+
+class OverwriteHandler(logging.StreamHandler):
+    before_msg = ""
+    before_msg_count = 1
+
+    def emit(self, record):
+        try:
+            msg = record.getMessage()
+            if self.before_msg == msg:
+                self.before_msg_count += 1
+                self.stream.write(f"\r{self.format(record)} [{self.before_msg_count}]")
+            else:
+                self.before_msg = msg
+                self.before_msg_count = 1
+                self.stream.write("\n" + self.format(record))
+            self.stream.flush()
+        except Exception:
+            self.handleError(record)
