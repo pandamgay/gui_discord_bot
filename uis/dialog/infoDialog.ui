@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>351</width>
-    <height>441</height>
+    <height>411</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>351</width>
-    <height>441</height>
+    <height>351</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -128,7 +128,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt; font-weight:600;&quot;&gt;사용된 주요 라이브러리&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt;&quot;&gt;- PyQt5 5.15.11 (GUI)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt;&quot;&gt;- discord.py 2.6.2 (Discord API)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt;&quot;&gt;- PyMySQL 1.1.2 (Database)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt;&quot;&gt;- APScheduler 3.11.0 (Task Scheduling)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt;&quot;&gt;- python-dotenv 1.1.1 (환경 변수 관리)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:10pt;&quot;&gt;- cryptography 45.0.6 (보안 관련)&lt;/span&gt;&lt;/p&gt;

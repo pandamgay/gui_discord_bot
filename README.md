@@ -27,6 +27,22 @@ Quick Bot은 디스코드 봇을 간단하고 가볍게 접근하기 위해
 커맨드나 이벤트를 코드 편집이 아닌  
 직관적인 GUI를 통해 수정할 수 있습니다.
 
+## 사용 예시
+(기능구현 후 작성 예정.)
+
+## 명령어 및 이벤트 목록
+> **[명령어 및 이벤트 목록](./commands.md)**
+
+## 설치 방법
+(아직 배포판은 공개되지 않음.)
+
+## 문제가 발생했을 때
+(기능구현 후 작성 예정.)
+
+## 지원
+만약, 문제가 생겼거나 지원이 필요할 때 개발자의 개인 이메일을 통해 연락할 수 있습니다.  
+이메일: elin.ye.joon@gmail.com
+
 ## 실행 방법(for developers)
 
 ### Python 설치
@@ -63,7 +79,6 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 > #### 사용된 주요 라이브러리
 > - PyQt5 5.15.11 (GUI)
 > - discord.py 2.6.2 (Discord API)
-> - PyMySQL 1.1.2 (Database)
 > - APScheduler 3.11.0 (Task Scheduling)
 > - python-dotenv 1.1.1 (환경 변수 관리)
 > - cryptography 45.0.6 (보안 관련)  
@@ -94,16 +109,6 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 > $ python3 main.py
 > ```
 
-## 설치 방법
-(아직 배포판은 공개되지 않음.)
-
-## 문제가 발생했을 때
-(기능구현 후 작성 예정.)
-
-## 지원
-만약, 문제가 생겼거나 지원이 필요할 때 개발자의 개인 이메일을 통해 연락할 수 있습니다.  
-이메일: elin.ye.joon@gmail.com
-
 ## 포함된 pip 라이브러리
 | 이름                                                       | 라이선스                               | 저작권                                                                       |
 |:---------------------------------------------------------|:-----------------------------------|:--------------------------------------------------------------------------|
@@ -115,29 +120,7 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 | [pytest](https://pypi.org/project/pytest/)               | MIT License                        | Copyright (c) 2004 Holger Krekel and others                               |
 
 ## 라이선스
-> **[MIT License 전문](./LICENSE)**
-> ```
-> MIT License
-> Copyright (c) 2025 이예준
-> 
-> Permission is hereby granted, free of charge, to any person obtaining a copy
-> of this software and associated documentation files (the "Software"), to deal
-> in the Software without restriction, including without limitation the rights
-> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-> copies of the Software, and to permit persons to whom the Software is
-> furnished to do so, subject to the following conditions:
-> 
-> The above copyright notice and this permission notice shall be included in all
-> copies or substantial portions of the Software.
-> 
-> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-> SOFTWARE.
-> ```
+> **[GPL-3.0 License 전문](./LICENSE)**
 
 ## 개발 환경
 - 운영체제: Windows 11
@@ -149,6 +132,3 @@ Quick Bot을 실행하기 위해, 인터프리터에 라이브러리를 설치�
 
 ## 릴리즈(변경 로그)
 > ### [릴리즈 바로가기](https://github.com/pandamgay/gui_discord_bot/releases)
-
-## 사용 예시
-(기능구현 후 작성 예정.)
