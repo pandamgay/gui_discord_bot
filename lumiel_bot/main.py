@@ -10,6 +10,32 @@ import traceback
 from utils import my_logger as ml
 from utils import my_curser as mc
 
+'''
+DB bot_setting컬럼 예시
+{
+    "channels": {
+        "entry_log_channel_id": 1384501387211313222,
+        "check_message_id": 1388526152351744061,
+        "people_count_channel_id": 1388573766719901796,
+        "invite_log_channel_id": 1433423256429400094,
+        "promotion_log_channel_id": 1384518652841295912,
+        "ben_log_channel_id": 1398123190999580672,
+        "event_message_id": null
+    },
+    "roles": {
+        "warn": 1398122039776383038,
+        "level_1": 1398122039776383802,
+        "level_2": 1398122042332630014,
+        "level_3": 1398122042332630015
+    }
+    "commands": {
+        "refreshPeopleCount": {
+            "use": true,
+        }
+    }
+}
+'''
+
 
 class LumielBot(QObject, commands.Bot):
     signal: pyqtSignal = pyqtSignal(tuple)
