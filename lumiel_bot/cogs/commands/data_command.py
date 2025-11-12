@@ -210,42 +210,6 @@ class Data_command(commands.Cog):
         )
         self.my_logger.info(f"DB 검증 완료 - 총 {i}개의 데이터 중 {k}개의 오류발생, {j}개의 유령 데이터가 삭제되었습니다.")
 
-    @app_commands.command(name="유저아이디-검색", description="사용자의 아이디를 검색합니다.")
-    @app_commands.describe(사용자id="검색할 사용자의 id를 입력하세요.")
-    @app_commands.default_permissions(administrator=True)
-    async def findUserID(self, interaction: discord.Interaction, 사용자id: str):
-
-        사용자id = int(사용자id)  # 사용자 ID를 정수로 변환
-        shared = self.bot.shared_data
-        cursor = shared["CURSOR"]
-        db = shared["DB"]
-        user = f"{interaction.user.display_name}[{interaction.user.id}]"
-
-        try:
-            cursor.execute(
-                f"SELECT * FROM users "
-                f"WHERE discord_user_id = {사용자id};"
-            ) # 사용자 ID로 데이터 검색
-            result = cursor.fetchone()
-            if result:
-                await interaction.response.send_message(
-                    f"검색결과: {result[0]} - {result[1]} <@{result[1]}>", ephemeral=True
-                )
-                self.my_logger.info(f"사용자 ID {사용자id}에 대한 정보를 검색했습니다.")
-            else:
-                discord_user = await self.bot.fetch_user(사용자id)
-                await interaction.response.send_message(
-                    "DB에서 해당 아이디를 가진 사용자를 찾지 못했습니다. discord로 진행합니다.\n"
-                    f"{discord_user.mention}({사용자id})", ephemeral=True
-                )
-                self.my_logger.warning(f"DB에서 해당 아이디를 가진 사용자를 찾지 못했습니다. discord로 진행합니다.")
-        except Exception as e:
-            await interaction.response.send_message("사용자 정보를 검색하는 중 오류가 발생했습니다.", ephemeral=True)
-            tb = traceback.format_exc()
-            self.my_logger.error(f"사용자 ID 검색 중 오류 발생: {tb}")
-
-        self.my_logger.info(f"유저아이디-검색 사용됨 - {user}\n 검색된 사용자 ID: {사용자id}")
-
 
 async def setup(bot):
     self = Data_command(bot)
