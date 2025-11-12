@@ -67,17 +67,6 @@ class EventCommand(commands.Cog):
         )
         self.my_logger.info(f"이벤트-종료 사용됨 - {user}")
 
-    @app_commands.command(name="이벤트-지정", description="이벤트를 직접 지정합니다.")
-    @app_commands.default_permissions(administrator=True)
-    async def choiceEvent(self, interaction: discord.Interaction, 이벤트id: str):
-        이벤트id = int(이벤트id)
-        shared = self.bot.shared_data
-        user = f"{interaction.user.display_name}[{interaction.user.id}]"
-        shared["event_message_id"] = 이벤트id
-
-        await interaction.response.send_message("성공적으로 이벤트id가 지정 되었습니다.", ephemeral=True)
-        self.my_logger.info(f"이벤트-지정 사용됨 - {user}\n 지정된 이벤트 ID: {이벤트id}")
-
     @app_commands.command(name="랜덤추첨", description="이벤트 참여자중 랜덤으로 추첨합니다.")
     @app_commands.default_permissions(administrator=True)
     async def randomPeople(self, interaction: discord.Interaction):
@@ -106,6 +95,7 @@ class EventCommand(commands.Cog):
         )
 
         self.my_logger.info(f"랜덤추첨 사용됨 - {user}\n 당첨자: {winner.display_name}({winner.id})")
+
 
 async def setup(bot):
     self = EventCommand(bot)
