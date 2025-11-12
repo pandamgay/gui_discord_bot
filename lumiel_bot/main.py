@@ -226,7 +226,8 @@ def init_db():
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS server (
             discord_guild_id BIGINT PRIMARY KEY,
-            bot_setting TEXT DEFAULT '{}'
+            bot_setting TEXT DEFAULT '{}',
+            now_event_message_id BIGINT DEFAULT NULL
         );
         """)
 
