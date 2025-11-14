@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 import traceback
 
+
 class InviteCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -27,7 +28,7 @@ class InviteCommand(commands.Cog):
                 f"SELECT * "
                 f"FROM users "
                 f"WHERE discord_user_id = {invited_member_id};"
-            ) # 사용자 중복 확인
+            ) # 사용자 존재 확인
             result = cursor.fetchone()
 
             if result == None:
