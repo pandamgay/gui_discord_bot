@@ -103,9 +103,9 @@ class Data_command(commands.Cog):
         self.my_logger.info(f"데이터-추가가 사용됨 - {user}")
 
     @app_commands.command(name="데이터-삭제", description="유저 데이터를 삭제합니다.")
-    @app_commands.describe(사용자id="삭제할 사용자의 id를 입력하세요.")
+    @app_commands.describe(사용자="삭제할 사용자를 입력하세요.")
     @app_commands.default_permissions(administrator=True)
-    async def deleteUserData(self, interaction: discord.Interaction, 사용자id: str):
+    async def deleteUserData(self, interaction: discord.Interaction, 사용자: discord.Member):
 
         shared = self.bot.shared_data
         user = f"{interaction.user.display_name}[{interaction.user.id}]"
@@ -118,12 +118,12 @@ class Data_command(commands.Cog):
         try:
             cursor.execute(
                 f"DELETE FROM users "
-                f"WHERE discord_user_id = {사용자id};"
+                f"WHERE discord_user_id = {사용자.id};"
             ) # 사용자 정보 삭제
             db.commit()
             self.my_logger.debug(f"{user}의 정보를 DB에 성공적으로 삭제했습니다.")
             await interaction.response.send_message(
-                f"{사용자id}의 데이터를 성공적으로 삭제했습니다.", ephemeral=True
+                f"{사용자.id}의 데이터를 성공적으로 삭제했습니다.", ephemeral=True
             )
         except Exception as e:
             tb = traceback.format_exc()

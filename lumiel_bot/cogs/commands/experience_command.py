@@ -11,6 +11,7 @@ class ExperienceCommand(commands.Cog):
         self.my_logger = bot.shared_data["LOGGER"]
 
     @app_commands.command(name="경험치-부여", description="사용자에게 경험치를 부여합니다.")
+    @app_commands.describe(유저="경험치를 부여할 사용자를 선택하세요.", 경험치="부여할 경험치 양을 입력하세요.")
     @app_commands.default_permissions(administrator=True)
     async def addExperience(self, interaction: discord.Interaction, 유저: discord.Member, 경험치: int):
 
@@ -42,6 +43,7 @@ class ExperienceCommand(commands.Cog):
             return
 
     @app_commands.command(name="경험치-삭제", description="사용자에게 경험치를 삭제합니다.")
+    @app_commands.describe(유저="경험치를 차감할 사용자를 선택하세요.", 경험치="차감할 경험치 양을 입력하세요.")
     @app_commands.default_permissions(administrator=True)
     async def deleteExperience(self, interaction: discord.Interaction, 유저: discord.Member, 경험치: int):
 
