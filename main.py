@@ -195,7 +195,10 @@ class BotThread(QThread):
                 f"Traceback:\n{exc_tb}"
             )
             _logger.error(log_msg)
-            raise RuntimeError("봇 실행 도중 오류가 발생했습니다.")
+            box.create_box(
+                "봇 실행 중 오류가 발생했습니다.",
+                QMessageBox.Critical
+            ).exec_()
 
 
 class LoadingWindow(QDialog, loading_window):

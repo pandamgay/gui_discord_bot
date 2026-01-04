@@ -19,12 +19,14 @@ def create_box(msg: str, level: int, title: str = None) -> QMessageBox:
         QMessageBox.Information: "안내",
         QMessageBox.Warning: "경고",
         QMessageBox.Question: "확인",
+        QMessageBox.Critical: "오류"
     }
 
     logging_tags = {
         QMessageBox.Information: "[information box]",
         QMessageBox.Warning: "[warning box]",
         QMessageBox.Question: "[question box]",
+        QMessageBox.Critical: "[critical box]"
     }
     
     if level not in default_titles:
