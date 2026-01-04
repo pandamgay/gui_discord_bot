@@ -32,7 +32,7 @@ class Events(commands.Cog):
             # 역할 부여
             try:
                 await payload.member.add_roles(role)
-                self.my_logger.debug(f"{user}에게 인증 유저 역할을 성공적으로 부여했습니다.")
+                self.my_logger.debug(f"{user}에게 인증 멤버 역할을 성공적으로 부여했습니다.")
             except discord.Forbidden:
                 self.my_logger.error(f"{user}에게 역할을 부여할 수 없습니다. 권한을 확인해주세요.")
                 return
@@ -42,7 +42,7 @@ class Events(commands.Cog):
                 return
 
             # 입장 로그
-            if "인증 유저" in user_roles:
+            if "인증 멤버" in user_roles:
                 self.my_logger.debug(f"{user}가 이미 역할을 가지고 있습니다. 입장 로그를 보내지 않습니다.")
             else:
                 try:
@@ -68,7 +68,7 @@ class Events(commands.Cog):
                 try:
                     await entry_log_channel.send(
                         f"{payload.member.display_name}님, 𝔥𝔢𝔞𝔳𝔢𝔫'𝔰 𝔡𝔯𝔞𝔤𝔬𝔫에 입성하신것을 환영합니다!\n"
-                        f"{payload.member.mention}님은 {inviter.mention}님이 초대하신 {invite_count}번째 유저입니다.\n"
+                        f"{payload.member.mention}님은 {inviter.mention}님이 초대하신 {invite_count}번째 멤버입니다.\n"
                     )
                     self.my_logger.debug(f"{user}님의 입장로그를 성공적으로 보냈습니다.")
                 except discord.Forbidden:
@@ -149,7 +149,7 @@ class Events(commands.Cog):
         # 초대 정보 저장
         try:
             if await self._is_unknownInviter():
-                self.my_logger.debug(f"초대된 사용자의 초대 정보가 없습니다: {member.id}")
+                self.my_logger.debug(f"초대된 멤버의 초대 정보가 없습니다: {member.id}")
                 await log_channel_id.send(
                     f"{member.mention}의 초대 정보가 없습니다.\n"
                     "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
@@ -164,22 +164,22 @@ class Events(commands.Cog):
                         f"SELECT COUNT(*) "
                         f"FROM users "
                         f"WHERE discord_user_id = {invited_member_id}"
-                    ) # 사용자 존재 여부 확인
+                    ) # 멤버 존재 여부 확인
                     exists = cursor.fetchone()[0]
                     if exists:
                         self.my_logger.debug(f"{user}는 이미 DB에 존재합니다.")
-                        await log_channel_id.send(f"초대된 사용자가 이미 DB에 존재합니다.")
+                        await log_channel_id.send(f"초대된 멤버가 이미 DB에 존재합니다.")
 
                     cursor.execute(
                         f"INSERT INTO users (discord_user_id, inviter_id, join_guild) "
                         f"VALUES ({invited_member_id}, {inviter_id}, {member.guild.id});"
-                    ) # 사용자 정보 삽입
+                    ) # 멤버 정보 삽입
                     db.commit()
                     self.my_logger.debug(f"{user}의 정보를 DB에 성공적으로 저장했습니다.")
                     await log_channel_id.send(f"{member.mention}님의 초대 정보가 성공적으로 저장되었습니다.")
                 except Exception as e:
                     tb = traceback.format_exc()
-                    self.my_logger.error(f"DB에 사용자 정보를 저장하는 중 오류 발생: {tb}")
+                    self.my_logger.error(f"DB에 멤버 정보를 저장하는 중 오류 발생: {tb}")
 
                 cursor.execute(
                     f"SELECT * "
@@ -194,9 +194,9 @@ class Events(commands.Cog):
                 # ~~~on_message이벤트 리스너가 on_member_join이벤트 리스너보다 먼저 실행된 경우~~~
                 # 현재로써는 의미는 없지만, 추후 오류 방지를 위해 남겨둠
                 if result is None:
-                    self.my_logger.warning(f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member_id}")
+                    self.my_logger.warning(f"초대된 멤버가 DB에 존재하지 않습니다: {invited_member_id}")
                     await log_channel_id.send(
-                        f"초대된 사용자가 DB에 존재하지 않습니다: {invited_member.mention}\n"
+                        f"초대된 멤버가 DB에 존재하지 않습니다: {invited_member.mention}\n"
                         "관리자뷰를 통해 수동으로 초대 정보를 저장해주세요. `/초대정보-추가`"
                     )
 
@@ -269,18 +269,18 @@ class Events(commands.Cog):
             self.my_logger.error(f"음성 채널 이름 변경 중 오류 발생: {tb}")
             return
 
-        # DB에 사용자 정보 삭제
+        # DB에 멤버 정보 삭제
         cursor = shared["CURSOR"]
         try:
             cursor.execute(
                 f"DELETE FROM users "
                 f"WHERE discord_user_id = {member.id};"
-            ) # 사용자 정보 제거
+            ) # 멤버 정보 제거
             db.commit()
             self.my_logger.debug(f"{user}의 정보를 DB에 성공적으로 삭제했습니다.")
         except Exception as e:
             tb = traceback.format_exc()
-            self.my_logger.error(f"DB에 사용자 정보를 삭제하는 중 오류 발생: {tb}")
+            self.my_logger.error(f"DB에 멤버 정보를 삭제하는 중 오류 발생: {tb}")
             return
         self.my_logger.info(f"{user} - 서버 퇴장.")
 
@@ -311,7 +311,7 @@ class Events(commands.Cog):
                 f"UPDATE users "
                 f"SET experience = experience + 1 "
                 f"WHERE discord_user_id = {message.author.id};"
-            ) # 메시지를 보낸 사용자에게 경험치 부여
+            ) # 메시지를 보낸 멤버에게 경험치 부여
             db.commit()
             self.my_logger.debug(f"{user}에게 1 경험치를 부여했습니다.")
         except Exception as e:

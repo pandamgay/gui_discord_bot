@@ -54,14 +54,14 @@ class AdminCommand(commands.Cog):
         await interaction.response.send_message("성공적으로 새로고침 되었습니다.", ephemeral=True)
         self.my_logger.info(f"현재인원-새로고침이 사용됨 - {user}")
 
-    @app_commands.command(name="경고-부여", description="유저에게 경고를 부여합니다.")
+    @app_commands.command(name="경고-부여", description="멤버에게 경고를 부여합니다.")
     @app_commands.describe(
-        유저="경고를 부여할 유저",
+        멤버="경고를 부여할 멤버",
         사유="경고 사유",
         기간="경고 기간 (기본값: 30일)"
     )
     @app_commands.default_permissions(administrator=True)
-    async def addWarn(self, interaction: discord.Interaction, 유저: discord.Member, 사유: str, 기간: int = 30):
+    async def addWarn(self, interaction: discord.Interaction, 멤버: discord.Member, 사유: str, 기간: int = 30):
 
         shared = self.bot.shared_data
         cursor = shared["CURSOR"]
@@ -71,7 +71,7 @@ class AdminCommand(commands.Cog):
         guild = interaction.guild
         self.my_logger.info(
             f"경고-부여 사용됨 - {user}\n"
-            f"유저: {유저.display_name}({유저.id}), 사유: {사유}, 기간: {기간}일"
+            f"멤버: {멤버.display_name}({멤버.id}), 사유: {사유}, 기간: {기간}일"
         )
         role = guild.get_role(1398122039776383038)
         self.my_logger.debug(role)
@@ -83,31 +83,31 @@ class AdminCommand(commands.Cog):
             )
             return
         try:
-            if role in 유저.roles:
-                self.my_logger.warning(f"{유저.display_name}({유저.id})는 이미 경고 역할을 가지고 있습니다.")
+            if role in 멤버.roles:
+                self.my_logger.warning(f"{멤버.display_name}({멤버.id})는 이미 경고 역할을 가지고 있습니다.")
                 await interaction.response.send_message(
-                    f"{유저.mention}님은 이미 경고 역할을 가지고 있습니다.\n"
+                    f"{멤버.mention}님은 이미 경고 역할을 가지고 있습니다.\n"
                     f"2회 경고는 밴 대상입니다. 조치 바랍니다.", ephemeral=True
                 )
                 return
-            await 유저.add_roles(role)
-            self.my_logger.info(f"{유저.display_name}({유저.id})에게 경고 역할을 성공적으로 부여했습니다.")
+            await 멤버.add_roles(role)
+            self.my_logger.info(f"{멤버.display_name}({멤버.id})에게 경고 역할을 성공적으로 부여했습니다.")
             until = datetime.now() + timedelta(days=기간)
             fomatted_time = until.strftime("%Y-%m-%d")
             cursor.execute(
                 f"UPDATE users "
                 f"SET warn_until = '{fomatted_time}' "
-                f"WHERE discord_user_id = {유저.id};"
+                f"WHERE discord_user_id = {멤버.id};"
             ) # 경고 기간 저장
             db.commit()
             await channel.send(
                 f"# 경고\n"
-                f"유저: {유저.mention}\n"
+                f"멤버: {멤버.mention}\n"
                 f"사유: {사유}\n"
                 f"기간: {기간}일\n"
                 f"자세한 사항은 {interaction.user.mention}님에게 문의해주세요."
             )
-            await interaction.response.send_message(f"{유저.mention}님에게 경고를 부여했습니다.")
+            await interaction.response.send_message(f"{멤버.mention}님에게 경고를 부여했습니다.")
         except discord.Forbidden:
             self.my_logger.error("경고 역할을 부여할 권한이 없습니다. 권한을 확인해주세요.")
             await interaction.response.send_message(
@@ -124,7 +124,7 @@ class AdminCommand(commands.Cog):
 
     @app_commands.command(
         name="경고-갱신",
-        description="경고가 만료된 유저를 갱신합니다.(매일 정오에 작동되므로 가급적 사용하지 마세요.)"
+        description="경고가 만료된 멤버를 갱신합니다.(매일 정오에 작동되므로 가급적 사용하지 마세요.)"
     )
     @app_commands.default_permissions(administrator=True)
     async def enforcementCheckWarn(self, interaction: discord.Interaction):
@@ -141,8 +141,8 @@ class AdminCommand(commands.Cog):
 
         members_with_role = [member for member in guild.members if role in member.roles]
         if not members_with_role:
-            self.my_logger.info("경고 역할을 가진 사용자가 없습니다.")
-            await interaction.response.send_message("현재 경고 역할을 가진 사용자가 없습니다.", ephemeral=True)
+            self.my_logger.info("경고 역할을 가진 멤버가 없습니다.")
+            await interaction.response.send_message("현재 경고 역할을 가진 멤버가 없습니다.", ephemeral=True)
             return
 
         i = 0
@@ -168,12 +168,12 @@ class AdminCommand(commands.Cog):
                 self.my_logger.error(f"경고 확인 중 오류 발생: {tb}")
                 j += 1
         self.my_logger.info(
-            f"경고 확인 완료 - {i}명의 유저 중 {k}명의 경고가 만료되었고, "
-            f"{j}명의 유저에서 오류가 발생했습니다."
+            f"경고 확인 완료 - {i}명의 멤버 중 {k}명의 경고가 만료되었고, "
+            f"{j}명의 멤버에서 오류가 발생했습니다."
         )
         await interaction.response.send_message(
             f"경고 갱신이 완료되었습니다.\n"
-            f"{i}명의 유저 중 {k}명의 경고가 만료되었고, {j}명의 유저에서 오류가 발생했습니다."
+            f"{i}명의 멤버 중 {k}명의 경고가 만료되었고, {j}명의 멤버에서 오류가 발생했습니다."
         )
 
     async def checkWarn(self):
@@ -188,7 +188,7 @@ class AdminCommand(commands.Cog):
 
         members_with_role = [member for member in guild.members if role in member.roles]
         if not members_with_role:
-            self.my_logger.info("경고 역할을 가진 사용자가 없습니다.")
+            self.my_logger.info("경고 역할을 가진 멤버가 없습니다.")
             return
 
         i = 0
@@ -214,8 +214,8 @@ class AdminCommand(commands.Cog):
                 self.my_logger.error(f"경고 확인 중 오류 발생: {tb}")
                 j += 1
         self.my_logger.info(
-            f"경고 확인 완료 - {i}명의 유저 중 {k}명의 경고가 만료되었고, "
-            f"{j}명의 유저에서 오류가 발생했습니다."
+            f"경고 확인 완료 - {i}명의 멤버 중 {k}명의 경고가 만료되었고, "
+            f"{j}명의 멤버에서 오류가 발생했습니다."
         )
 
 

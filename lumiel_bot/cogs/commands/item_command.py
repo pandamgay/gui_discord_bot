@@ -85,7 +85,7 @@ class ItemCommand(commands.Cog):
             )
             return
 
-        # 경험치 검증 => 사용자의 경험치가 충분한지 확인
+        # 경험치 검증 => 멤버의 경험치가 충분한지 확인
         try:
             cursor.execute(
                 f"SELECT experience "
@@ -109,11 +109,11 @@ class ItemCommand(commands.Cog):
             db.commit()
 
             async def button_callback(interaction: discord.Interaction, color: int):
-                # 다른 사용자가 버튼 클릭시 무시
+                # 다른 멤버가 버튼 클릭시 무시
                 if interaction.user.id != command_interaction.user.id:
                     self.my_logger.warning(
                         f"{interaction.user.display_name}[{interaction.user.id}]가 "
-                        f"다른 사용자의 버튼을 클릭했습니다."
+                        f"다른 멤버의 버튼을 클릭했습니다."
                     )
                     return
                 game_result = self.playGamble(배율, color, 경험치, interaction.user.id)

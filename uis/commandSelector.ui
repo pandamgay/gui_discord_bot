@@ -56,7 +56,7 @@
      <enum>QFrame::Box</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QLabel" name="label_7">
@@ -72,37 +72,11 @@
        <string>/데이터-삭제</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_5">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>170</y>
-        <width>81</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>편집하기</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>50</y>
-        <width>81</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>편집하기</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_9">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>200</y>
+        <y>170</y>
         <width>121</width>
         <height>21</height>
        </rect>
@@ -124,56 +98,17 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="label_8">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>170</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>/유저아이디-검색</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_2">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>80</y>
-        <width>16</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>80</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>/데이터베이스-검증</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_11">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>260</y>
+        <y>230</y>
         <width>121</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>/유저-경험치-조회</string>
+       <string>/멤버-경험치-조회</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -189,6 +124,8 @@
        <font>
         <family>맑은 고딕</family>
         <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
@@ -212,7 +149,7 @@
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>260</y>
+        <y>230</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -221,24 +158,11 @@
        <string>편집하기</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>50</y>
-        <width>16</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pushButton_6">
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>200</y>
+        <y>170</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -251,26 +175,13 @@
       <property name="geometry">
        <rect>
         <x>300</x>
-        <y>260</y>
+        <y>230</y>
         <width>16</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
        <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>/데이터베이스-갱신</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox_3">
@@ -290,7 +201,7 @@
       <property name="geometry">
        <rect>
         <x>300</x>
-        <y>230</y>
+        <y>200</y>
         <width>16</width>
         <height>21</height>
        </rect>
@@ -303,7 +214,7 @@
       <property name="geometry">
        <rect>
         <x>300</x>
-        <y>200</y>
+        <y>170</y>
         <width>16</width>
         <height>21</height>
        </rect>
@@ -325,6 +236,8 @@
        <font>
         <family>맑은 고딕</family>
         <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
@@ -335,7 +248,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>230</y>
+        <y>200</y>
         <width>121</width>
         <height>21</height>
        </rect>
@@ -361,20 +274,7 @@
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>230</y>
-        <width>81</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>편집하기</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>80</y>
+        <y>200</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -394,19 +294,6 @@
       </property>
       <property name="text">
        <string>/데이터-추가</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_5">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>170</y>
-        <width>16</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
       </property>
      </widget>
      <widget class="QLabel" name="label_23">
@@ -432,13 +319,24 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="page_3">
-     <widget class="QPushButton" name="pushButton_17">
+     <widget class="QCheckBox" name="checkBox_21">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>260</y>
+        <width>16</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_23">
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>50</y>
+        <y>260</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -451,39 +349,13 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>140</y>
+        <y>260</y>
         <width>121</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
        <string>/진급하기</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_26">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>110</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>/출석-체크</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_21">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>110</y>
-        <width>81</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>편집하기</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox_20">
@@ -499,43 +371,24 @@
        <string/>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_21">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>140</y>
-        <width>16</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_28">
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>20</y>
-        <width>101</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>맑은 고딕</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>명령어 편집하기</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_23">
+     <widget class="QPushButton" name="pushButton_24">
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>140</y>
+        <y>80</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>편집하기</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_17">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>50</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -557,59 +410,17 @@
        <string>/경험치-도박</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_24">
+     <widget class="QLabel" name="label_34">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>80</y>
-        <width>81</width>
-        <height>23</height>
+        <x>10</x>
+        <y>50</y>
+        <width>121</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>편집하기</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_32">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>21</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>맑은 고딕</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>3</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_33">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>20</y>
-        <width>56</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>맑은 고딕</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>사용 여부</string>
+       <string>/경험치-조회</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox_23">
@@ -623,32 +434,6 @@
       </property>
       <property name="text">
        <string/>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_24">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>110</y>
-        <width>16</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_34">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>/경험치-조회</string>
       </property>
      </widget>
     </widget>
@@ -783,6 +568,8 @@
        <font>
         <family>맑은 고딕</family>
         <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
@@ -867,19 +654,6 @@
        <string/>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_14">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>200</y>
-        <width>16</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
      <widget class="QCheckBox" name="checkBox_15">
       <property name="geometry">
        <rect>
@@ -906,23 +680,12 @@
        <font>
         <family>맑은 고딕</family>
         <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
        <string>명령어 편집하기</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_20">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>200</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>/이벤트-지정</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_14">
@@ -930,19 +693,6 @@
        <rect>
         <x>160</x>
         <y>110</y>
-        <width>81</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>편집하기</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_15">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>200</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -1037,6 +787,45 @@
       </property>
       <property name="text">
        <string>편집하기</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_28">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>200</y>
+        <width>121</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>/출석-체크</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_34">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>200</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>편집하기</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_36">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>200</y>
+        <width>16</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </widget>
