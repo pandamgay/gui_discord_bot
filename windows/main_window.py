@@ -120,7 +120,7 @@ class MainWindow(QMainWindow, main_window):
         self.level = level_indexes[self.logLevelSelectComboBox.currentIndex()]
         self.logger.debug(f"로그 레벨 저장 및 로드됨. level: {self.level}")
         log = lf.log_filter(self.level, "lumiel_bot.main")
-        self.logTextBrowser.setPlainText(log)
+        self.logTextBrowser.setPlainText(log.rstrip())
         scroll_bar = self.logTextBrowser.verticalScrollBar()
         scroll_bar.setValue(scroll_bar.maximum())
 
