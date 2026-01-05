@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 import traceback
 
+
 class ExperienceCommand(commands.Cog):
 
     def __init__(self, bot):
@@ -170,6 +171,7 @@ class ExperienceCommand(commands.Cog):
             await interaction.response.send_message(
                 "오류가 발생했습니다. 운영진에게 문의해주세요.", ephemeral=True
             )
+
 
 async def setup(bot):
     self = ExperienceCommand(bot)

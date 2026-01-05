@@ -8,11 +8,11 @@ import time
 from datetime import datetime, timedelta
 from discord.ui import Button, View
 
+
 class ItemCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.my_logger = bot.shared_data["LOGGER"]
-
 
     async def autocomplete_options(self, interaction: discord.Interaction, 배율: str):
         options = [
@@ -271,7 +271,7 @@ class ItemCommand(commands.Cog):
             f"연속출석 기록은 {continuous_attendance_date}일입니다!"
         )
 
-    @app_commands.command(name="진급-하기", description="등급을 올라갑니다.")
+    @app_commands.command(name="진급-하기", description="등급을 올립니다.")
     async def promotion(self, interaction: discord.Interaction):
 
         shared = self.bot.shared_data
@@ -425,6 +425,7 @@ class ItemCommand(commands.Cog):
 
         yes_button.callback = yes_callback
         no_button.callback = no_callback
+
 
 async def setup(bot):
     self = ItemCommand(bot)
