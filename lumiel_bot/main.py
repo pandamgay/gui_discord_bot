@@ -14,23 +14,105 @@ from utils import my_curser as mc
 DB bot_setting컬럼 예시
 {
     "channels": {
-        "entry_log_channel_id": 1384501387211313222,
-        "check_message_id": 1388526152351744061,
+        "welcome_message_channel_id": 1384501387211313222,
+        "certification_message_id": 1388526152351744061,
         "people_count_channel_id": 1388573766719901796,
-        "invite_log_channel_id": 1433423256429400094,
         "promotion_log_channel_id": 1384518652841295912,
-        "ben_log_channel_id": 1398123190999580672,
-        "event_message_id": null
+        "ban_log_channel_id": 1398123190999580672,
+        "event_channel_id": 1389249659184349396
     },
     "roles": {
         "warn": 1398122039776383038,
         "level_1": 1398122039776383802,
         "level_2": 1398122042332630014,
-        "level_3": 1398122042332630015
-    }
+        "level_3": 1398122042332630015,
+        "certified": 1384512188491763885,
+        "event_participant": 1389249659184349395,
+        "event_winner": 1389249659184325487
+    },
     "commands": {
-        "refreshPeopleCount": {
+        "addWarn": {
             "use": true,
+            "default_until": 30
+        },
+        "createEvent": {
+            "use": true,
+            "event_message_template": "..."
+        },
+        "finishEvent": {
+            "use": true,
+            "finish_message": "..."
+        },
+        "randomPeople": {
+            "use": true
+        },
+        "addExperience": {
+            "use": true
+        },
+        "deleteExperience": {
+            "use": true
+        },
+        "checkExperience": {
+            "use": true
+        },
+        "myExperience": {
+            "use": true
+        },
+        "gambleExperience": {
+            "use": true,
+            "min_bet": 10,
+            "max_bet": 1000
+        },
+        "attendanceCheck": {
+            "use": true,
+            "reward_experience": 50
+        },
+        "promotion": {
+            "use": true,
+            "experience_by_levels": {
+              "level_1": {"experience": 100 },
+              "level_2": {"experience": 1000 },
+              "level_3": {"experience": 5000 }
+            },
+            "promotion_confirmation_message_template": "...",
+            "promotion_message_template": "...",
+            "promotion_fail_message_template": "..."
+        }
+    },
+    "utils": {
+        "now_people_count": {
+            "use": true,
+            "channel_name_template": "현재 인원수: {count}명"
+        },
+        "certification": {
+            "use": true,
+            "certification_message": "..."
+        },
+        "join_server": {
+            "use": true,
+            "welcome_message": "..."
+        },
+        "messages_management": {
+            "use": true,
+            "message_save_state": true,
+            "ignore_channels": [1389249659184349396, 1389174108213743636, 1384506206596632626, 1388846281723609168]
+        },
+        "event": {
+            "use": true
+        },
+        "experience_system": {
+            "use": true,
+            "get_experience_method": {
+                "message": true,
+                "invite": true,
+                "attendance": true
+            }
+        },
+        "warn_system": {
+            "use": true
+        },
+        "invite_system": {
+            "use": true
         }
     }
 }
