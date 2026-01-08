@@ -164,3 +164,5 @@ class InfoDialog(QDialog, info_dialog):
         super().__init__()
         self.setupUi(self)
         self.show()
+
+        self.textBrowser.setOpenExternalLinks(True)

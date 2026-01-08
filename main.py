@@ -199,6 +199,18 @@ class BotThread(QThread):
                 "봇 실행 중 오류가 발생했습니다.",
                 QMessageBox.Critical
             ).exec_()
+        if lumiel.ON_CRITICAL == payload[0]:
+            _logger.debug(f"BotThread: 시그널 수신됨. message: {payload[1]}")
+            exc_type, exc_value, exc_tb = payload[2]
+
+            log_msg = (
+                f"\n[Unhandled Exception]\n"
+                f"Type: {exc_type}\n"
+                f"Message: {exc_value}\n"
+                f"Traceback:\n{exc_tb}"
+            )
+            _logger.error(log_msg)
+            raise Exception("봇 실행 중 치명적 오류가 발생해 프로그램을 중단합니다.")
 
 
 class LoadingWindow(QDialog, loading_window):
@@ -261,12 +273,13 @@ class InputPasswordWindow(QDialog, start_window):
         self.inputTokenLine.setEchoMode(QLineEdit.Password)
 
         self.newTokenButton.clicked.connect(self.new_token)
+        self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.token_check)
         self.saveTokenBox.stateChanged.connect(self.handle_check)
 
         self.token = None
         self.is_removed = False
-        self.is_close = False
+        self.is_close = True
 
     def new_token(self):
         shutil.rmtree(os.path.join(PROJECT_ROOT, "config"))
@@ -276,7 +289,11 @@ class InputPasswordWindow(QDialog, start_window):
 
     def token_check(self):
         token, salt = tv.load_token()
-        self.token = tc.decrypt_token(token, self.inputTokenLine.text(), salt).decode("utf-8")
+        try:
+            self.token = tc.decrypt_token(token, self.inputTokenLine.text(), salt).decode("utf-8")
+        except ValueError:
+            box.create_box("비밀번호가 일치하지 않습니다.", QMessageBox.Warning).exec_()
+            return
         event_filter.self_close = True
         self.close()
 
@@ -287,7 +304,6 @@ class InputPasswordWindow(QDialog, start_window):
             self.inputTokenLine.setEchoMode(QLineEdit.Password)
 
     def closeEvent(self, event):
-        self.is_close = True
         event.accept()
 
     def user_result(self) -> Tuple[bool, str, bool]:

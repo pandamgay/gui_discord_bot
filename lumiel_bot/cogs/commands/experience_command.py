@@ -43,7 +43,7 @@ class ExperienceCommand(commands.Cog):
             await interaction.response.send_message("오류가 발생했습니다.", ephemeral=True)
             return
 
-    @app_commands.command(name="경험치-삭제", description="멤버에게 경험치를 삭제합니다.")
+    @app_commands.command(name="경험치-삭제", description="멤버에게서 경험치를 삭제합니다.")
     @app_commands.describe(멤버="경험치를 차감할 멤버를 선택하세요.", 경험치="차감할 경험치 양을 입력하세요.")
     @app_commands.default_permissions(administrator=True)
     async def deleteExperience(self, interaction: discord.Interaction, 멤버: discord.Member, 경험치: int):

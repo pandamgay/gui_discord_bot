@@ -67,7 +67,7 @@ class EventCommand(commands.Cog):
         )
         self.my_logger.info(f"이벤트-종료 사용됨 - {user}")
 
-    @app_commands.command(name="랜덤추첨", description="이벤트 참여자중 랜덤으로 추첨합니다.")
+    @app_commands.command(name="랜덤-추첨", description="이벤트 참여자중 랜덤으로 추첨합니다.")
     @app_commands.default_permissions(administrator=True)
     async def randomPeople(self, interaction: discord.Interaction):
 
@@ -83,7 +83,7 @@ class EventCommand(commands.Cog):
             await interaction.response.send_message(
                 "현재 이벤트 참여자가 없습니다. 이벤트 참여자를 먼저 모집해주세요.", ephemeral=True
             )
-            self.my_logger.info(f"랜덤추첨 사용 실패 - {user}\n이벤트 참여자가 없음")
+            self.my_logger.info(f"랜덤-추첨 사용 실패 - {user}\n이벤트 참여자가 없음")
             return
 
         # 랜덤 추첨
@@ -94,7 +94,7 @@ class EventCommand(commands.Cog):
             f"{winner.mention}"
         )
 
-        self.my_logger.info(f"랜덤추첨 사용됨 - {user}\n 당첨자: {winner.display_name}({winner.id})")
+        self.my_logger.info(f"랜덤-추첨 사용됨 - {user}\n 당첨자: {winner.display_name}({winner.id})")
 
 
 async def setup(bot):

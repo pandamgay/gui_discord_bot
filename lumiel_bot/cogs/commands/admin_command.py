@@ -86,6 +86,48 @@ class AdminCommand(commands.Cog):
             )
             return
 
+    async def checkWarn(self):
+
+        shared = self.bot.shared_data
+        cursor = shared["CURSOR"]
+        db = shared["DB"]
+        channel = self.bot.get_channel(shared["BEN_LOG_CHANNEL_ID"])
+        guild = self.bot.get_guild(shared["GUILD_ID"])
+        role = guild.get_role(1398122039776383038)
+        self.my_logger.debug(role)
+
+        members_with_role = [member for member in guild.members if role in member.roles]
+        if not members_with_role:
+            self.my_logger.info("경고 역할을 가진 멤버가 없습니다.")
+            return
+
+        i = 0
+        j = 0
+        k = 0
+        for member in members_with_role:
+            try:
+                i += 1
+                cursor.execute(
+                    f"SELECT warn_until "
+                    f"FROM users "
+                    f"WHERE discord_user_id = {member.id}"
+                )  # 경고 기간 조회
+                result = cursor.fetchone()[0]
+                current_date = datetime.today().date()
+                if result and result < str(current_date):
+                    k += 1
+                    await member.remove_roles(role)
+                    self.my_logger.debug(f"{member.display_name}의 경고 역할이 제거되었습니다.")
+                    channel.send(f"{member.mention}님의 경고가 만료되어 경고 역할이 제거되었습니다.")
+            except Exception as e:
+                tb = traceback.format_exc()
+                self.my_logger.error(f"경고 확인 중 오류 발생: {tb}")
+                j += 1
+        self.my_logger.info(
+            f"경고 확인 완료 - {i}명의 멤버 중 {k}명의 경고가 만료되었고, "
+            f"{j}명의 멤버에서 오류가 발생했습니다."
+        )
+
 
 async def setup(bot):
     self = AdminCommand(bot)

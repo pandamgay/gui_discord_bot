@@ -33,7 +33,8 @@ DB bot_setting컬럼 예시
     "commands": {
         "addWarn": {
             "use": true,
-            "default_until": 30
+            "default_until": 30,
+            "warn_message_template": "..."
         },
         "createEvent": {
             "use": true,
@@ -74,9 +75,7 @@ DB bot_setting컬럼 예시
               "level_2": {"experience": 1000 },
               "level_3": {"experience": 5000 }
             },
-            "promotion_confirmation_message_template": "...",
-            "promotion_message_template": "...",
-            "promotion_fail_message_template": "..."
+            "promotion_message_template": "..."
         }
     },
     "utils": {
@@ -222,15 +221,13 @@ class LumielBot(QObject, commands.Bot):
             await self.bot.load_extension("lumiel_bot.cogs.events")
             await self.bot.load_extension("lumiel_bot.cogs.commands.admin_command")
             await self.bot.load_extension("lumiel_bot.cogs.commands.event_command")
-            await self.bot.load_extension("lumiel_bot.cogs.commands.data_command")
             await self.bot.load_extension("lumiel_bot.cogs.commands.experience_command")
             await self.bot.load_extension("lumiel_bot.cogs.commands.item_command")
-            await self.bot.load_extension("lumiel_bot.cogs.commands.invite_command")
             self.my_logger.debug("cogs가 성공적으로 로드되었습니다.")
         except Exception as e:
             tb = traceback.format_exc()
             self.my_logger.error(f"Cog 로드 중 오류 발생:\n {tb}")
-            await self.bot.close()
+            raise e
 
     def run_lumiel(self, TOKEN):
         if TOKEN:
@@ -268,21 +265,8 @@ class LumielBot(QObject, commands.Bot):
     async def on_error(self, event, *args, **kwargs):
         exc_type, exc_value, exc_tb = sys.exc_info()
         exc_tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-        self.signal.emit((ON_ERROR, "봇 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
+        self.signal.emit((ON_CRITICAL, "봇 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
         self.my_logger.error(f"봇 실행 도중 오류 발생: {exc_value}")
-
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError) and error.original:
-            exc_type = type(error.original)
-            exc_value = error.original
-            exc_tb = str(error.original.__traceback__)
-        else:
-            exc_type = type(error)
-            exc_value = error
-            exc_tb = str(error.__traceback__)
-
-        self.signal.emit((ON_ERROR, "명령어 실행 도중 오류 발생", (exc_type, exc_value, exc_tb)))
-        self.my_logger.error(f"명령어 실행 도중 오류 발생: {exc_value}")
 
     async def on_app_command_error(self, interaction, error):
         exc_type = type(error)
@@ -333,6 +317,7 @@ def init_db():
 
 BOT_INIT_SUCCESS = 0
 ON_ERROR = 1
+ON_CRITICAL = 2
 ON_LOGGING = 30
 DO_SEND_MESSAGE = 81
 CHANNEL_NOT_FOUND = 84
