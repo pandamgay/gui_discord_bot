@@ -45,6 +45,9 @@
    <property name="text">
     <string>사용 여부</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="editLable">
    <property name="geometry">
@@ -65,6 +68,9 @@
    </property>
    <property name="text">
     <string>명령어 편집하기</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="titleLabel">
