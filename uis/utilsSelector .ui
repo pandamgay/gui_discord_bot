@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>명령어 편집기</string>
+   <string>유틸리티</string>
   </property>
   <widget class="QLabel" name="availabilityLable">
    <property name="geometry">
